@@ -1,0 +1,35 @@
+[bookmark.php pre-output] {"success":true,"message":"Bookmark removed successfully","bookmarked":false,"action":"removed"}
+[bookmark.php pre-output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[bookmark.php pre-output] {"success":false,"message":"Already bookmarked","bookmarked":true}
+[bookmark.php pre-output] {"success":true,"message":"Bookmark removed successfully","bookmarked":false,"action":"removed"}
+[bookmark.php pre-output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[bookmark.php pre-output] {"success":false,"message":"Already bookmarked","bookmarked":true}
+[bookmark.php pre-output] {"success":true,"message":"Bookmark removed successfully","bookmarked":false,"action":"removed"}
+[bookmark.php pre-output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[bookmark.php pre-output] {"success":true,"message":"Bookmark removed successfully","bookmarked":false,"action":"removed"}
+[bookmark.php pre-output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[bookmark.php pre-output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[mark_notification_read.php pre-output] {"success":true,"message":"Notification marked as read","notification_id":3}
+[mark_notification_read.php pre-output] {"success":true,"message":"Notification marked as read","notification_id":3}
+[bookmark.php pre-output] {"success":false,"message":"Bookmark not found","bookmarked":false}
+[bookmark.php pre-output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[mark_notification_read.php pre-output] {"success":true,"message":"Notification marked as read","notification_id":9}
+[bookmark.php pre-output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[bookmark.php pre-output] {"success":true,"message":"Bookmark removed successfully","bookmarked":false,"action":"removed"}
+[bookmark.php pre-output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[bookmark.php pre-output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[bookmark.php pre-output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[bookmark.php pre-output] {"success":true,"message":"Bookmark removed successfully","bookmarked":false,"action":"removed"}
+[bookmark.php pre-output] {"success":false,"message":"Bookmark not found","bookmarked":false}
+[bookmark.php pre-output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[bookmark.php pre-output] {"success":true,"message":"Bookmark removed successfully","bookmarked":false,"action":"removed"}
+[bookmark.php pre-output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[bookmark.php pre-output] {"success":true,"message":"Bookmark removed successfully","bookmarked":false,"action":"removed"}
+[bookmark.php pre-output] {"success":false,"message":"Bookmark not found","bookmarked":false}
+[bookmark.php pre-output] {"success":false,"message":"Bookmark not found","bookmarked":false}
+[bookmark.php shutdown output] {"success":true,"message":"Post bookmarked successfully!","bookmarked":true,"action":"added"}
+[bookmark.php shutdown output] {"success":false,"message":"Already bookmarked","bookmarked":true}
+[bookmark.php shutdown output] {"success":false,"message":"Already bookmarked","bookmarked":true}
+[mark_notification_read.php pre-output] {"success":true,"message":"Notification marked as read","notification_id":22}
+[mark_notification_read.php pre-output] {"success":true,"message":"Notification marked as read","notification_id":28}
+[mark_notification_read.php pre-output] {"success":true,"message":"Notification marked as read","notification_id":28}
