@@ -16,8 +16,6 @@ try {
     mysqli_options($conn, MYSQLI_OPT_CONNECT_TIMEOUT, 5);
 
     mysqli_real_connect($conn, $host, $user, $pass, $dbname);
-
-    ensure_posts_review_schema($conn);
 } catch (Throwable $e) {
     error_log("Database connection failed: " . $e->getMessage());
     http_response_code(503);
@@ -57,5 +55,13 @@ if (!function_exists('ensure_posts_review_schema')) {
             $conn->query("ALTER TABLE posts " . implode(', ', $alter));
         }
     }
+}
+
+try {
+    ensure_posts_review_schema($conn);
+} catch (Throwable $e) {
+    error_log("Database schema check failed: " . $e->getMessage());
+    http_response_code(503);
+    die("Database connection failed. Please check the database schema and try again.");
 }
 ?>
