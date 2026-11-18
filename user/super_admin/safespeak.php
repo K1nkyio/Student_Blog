@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 
 if (empty($_SESSION['admin'])) {
@@ -21,3 +22,4 @@ $safespeak_footer_include = __DIR__ . '/includes/footer.php';
 $safespeak_post_endpoint = 'safespeak.php';
 $safespeak_report_endpoint = 'ajax/get_report.php';
 require __DIR__ . '/../admin/safespeak.php';
+

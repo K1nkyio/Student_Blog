@@ -7,7 +7,8 @@ header('Access-Control-Allow-Headers: Content-Type');
 
 try {
     // Start session and load includes
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
     require_once __DIR__ . '/db_connect.php';
     require_once __DIR__ . '/functions.php';
 
@@ -96,3 +97,4 @@ try {
     exit;
 }
 ?>
+

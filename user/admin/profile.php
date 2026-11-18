@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 
 if (empty($_SESSION['admin'])) {
@@ -9,6 +10,7 @@ if (empty($_SESSION['admin'])) {
 }
 
 include '../shared/db_connect.php';
+require_once dirname(__DIR__) . '/shared/admin_auth.php';
 
 $topbar_title_override = 'Profile';
 $topbar_subtitle_override = 'Manage your account details';
@@ -33,8 +35,8 @@ if (!$admin) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $new_password = trim($_POST['new_password'] ?? '');
-    $confirm_password = trim($_POST['confirm_password'] ?? '');
+    $new_password = (string)($_POST['new_password'] ?? '');
+    $confirm_password = (string)($_POST['confirm_password'] ?? '');
 
     if ($username === '' || $email === '') {
         $error = 'Username and email are required.';
@@ -42,6 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Enter a valid email address.';
     } elseif ($new_password !== '' && $new_password !== $confirm_password) {
         $error = 'New password and confirmation do not match.';
+    } elseif ($new_password !== '' && strlen($new_password) < 12) {
+        $error = 'Use a password with at least 12 characters.';
     } else {
         $check = $conn->prepare("SELECT id FROM admins WHERE (username = ? OR email = ?) AND id != ? LIMIT 1");
         $check->bind_param('ssi', $username, $email, $admin_id);
@@ -53,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Another admin account already uses that username or email.';
         } else {
             if ($new_password !== '') {
-                $password = md5($new_password);
+                $password = admin_password_hash($new_password);
                 $update = $conn->prepare("UPDATE admins SET username = ?, email = ?, password = ? WHERE id = ?");
                 $update->bind_param('sssi', $username, $email, $password, $admin_id);
             } else {
@@ -62,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($update->execute()) {
+                session_regenerate_id(true);
                 $_SESSION['admin'] = $username;
                 $success = 'Profile updated successfully.';
                 $admin['username'] = $username;
@@ -303,3 +308,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <?php include 'includes/footer.php'; ?>
+

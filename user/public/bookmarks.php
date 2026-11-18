@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -44,7 +45,7 @@ $stmt->execute();
 $bookmarked = $stmt->get_result();
 $stmt->close();
 
-$page_title = 'Bookmarks — ' . SITE_NAME;
+$page_title = 'Bookmarks â€” ' . SITE_NAME;
 include '../shared/header.php';
 ?>
 
@@ -53,9 +54,9 @@ include '../shared/header.php';
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
-   DESIGN TOKENS — exact match opportunities.php
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DESIGN TOKENS â€” exact match opportunities.php
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -102,9 +103,9 @@ a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 button { font-family: inherit; }
 
-/* ═══════════════════════════════════════════
-   HERO STRIP — dark ink, same as all other pages
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HERO STRIP â€” dark ink, same as all other pages
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .bm-hero {
   background: var(--ink);
   color: #fff;
@@ -211,9 +212,9 @@ button { font-family: inherit; }
   margin-top: .22rem;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BODY
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .bm-body {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -231,9 +232,9 @@ button { font-family: inherit; }
 }
 .results-bar strong { color: var(--ink-mid); font-weight: 600; }
 
-/* ═══════════════════════════════════════════
-   POSTS GRID — white cards, same as explore.php
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   POSTS GRID â€” white cards, same as explore.php
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .posts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -266,7 +267,7 @@ button { font-family: inherit; }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── card image ── */
+/* â”€â”€ card image â”€â”€ */
 .card-media {
   position: relative;
   width: 100%;
@@ -306,7 +307,7 @@ button { font-family: inherit; }
 }
 .card-cat:hover { background: var(--accent); }
 
-/* saved-at badge — bottom-left */
+/* saved-at badge â€” bottom-left */
 .card-saved-at {
   position: absolute;
   bottom: 10px; left: 10px;
@@ -350,7 +351,7 @@ button { font-family: inherit; }
 .card-action-btn.share-open-btn:hover { color: var(--sky); }
 .card-action-btn svg { width: 13px; height: 13px; }
 
-/* ── card body ── */
+/* â”€â”€ card body â”€â”€ */
 .card-body {
   padding: 1.1rem 1.2rem 1.25rem;
   flex: 1;
@@ -445,9 +446,9 @@ button { font-family: inherit; }
 .card-read:hover { border-color: var(--ink); color: var(--ink); background: var(--bg-warm); }
 .card-read svg { width: 11px; height: 11px; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    EMPTY STATE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .bm-empty {
   text-align: center;
   padding: 5rem 2rem;
@@ -481,9 +482,9 @@ button { font-family: inherit; }
 .btn-browse:hover { background: #2c2a22; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(24,22,15,.2); color: #fff; }
 .btn-browse svg { width: 12px; height: 12px; }
 
-/* ═══════════════════════════════════════════
-   PAGINATION — matches .opp-pagination
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PAGINATION â€” matches .opp-pagination
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .bm-pagination {
   display: flex;
   align-items: center;
@@ -517,9 +518,9 @@ button { font-family: inherit; }
 .pg-btn.dots     { pointer-events: none; border-color: transparent; background: transparent; }
 .pg-btn svg { width: 11px; height: 11px; }
 
-/* ═══════════════════════════════════════════
-   SHARE MODAL — same as explore.php
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SHARE MODAL â€” same as explore.php
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .modal-overlay {
   display: none;
   position: fixed; inset: 0;
@@ -596,9 +597,9 @@ button { font-family: inherit; }
 .s-copy { grid-column:1/-1; color:var(--ink-mid); }
 .s-copy:hover { background:var(--bg-warm); border-color:var(--ink-mid); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TOAST
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .toast-dock {
   position: fixed; bottom: 1.5rem; right: 1.5rem;
   z-index: 10000; display: flex; flex-direction: column; gap: .4rem;
@@ -617,9 +618,9 @@ button { font-family: inherit; }
 .toast-success { background: var(--green); }
 .toast-error   { background: var(--red); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 640px) {
   .posts-grid { grid-template-columns: 1fr; }
   .share-grid { grid-template-columns: 1fr; }
@@ -629,7 +630,7 @@ button { font-family: inherit; }
 }
 </style>
 
-<!-- ══════ HERO ══════ -->
+<!-- â•â•â•â•â•â• HERO â•â•â•â•â•â• -->
 <div class="bm-hero">
   <div class="hero-inner">
     <div class="hero-eyebrow">
@@ -637,7 +638,7 @@ button { font-family: inherit; }
       Reading List
     </div>
     <h1 class="hero-headline">Your <em>Bookmarks</em></h1>
-    <p class="hero-sub">Posts you've saved for later — pick up right where you left off.</p>
+    <p class="hero-sub">Posts you've saved for later â€” pick up right where you left off.</p>
     <div class="hero-stats">
       <div>
         <span class="hero-stat-num"><?php echo number_format($total_bookmarks); ?></span>
@@ -651,7 +652,7 @@ button { font-family: inherit; }
   </div>
 </div>
 
-<!-- ══════ BODY ══════ -->
+<!-- â•â•â•â•â•â• BODY â•â•â•â•â•â• -->
 <div class="bm-body">
 
   <?php display_flash(); ?>
@@ -667,7 +668,7 @@ button { font-family: inherit; }
 
     <div class="posts-grid">
       <?php while ($post = $bookmarked->fetch_assoc()):
-        $excerpt  = !empty($post['excerpt']) ? $post['excerpt'] : (function_exists('get_excerpt') ? get_excerpt($post['content'], 150) : substr(strip_tags($post['content']), 0, 150) . '…');
+        $excerpt  = !empty($post['excerpt']) ? $post['excerpt'] : (function_exists('get_excerpt') ? get_excerpt($post['content'], 150) : substr(strip_tags($post['content']), 0, 150) . 'â€¦');
         $post_url = !empty($post['slug']) ? "post.php?slug=" . urlencode($post['slug']) : "post.php?id=" . $post['id'];
         $full_url = "https://{$_SERVER['HTTP_HOST']}/{$post_url}";
       ?>
@@ -738,7 +739,7 @@ button { font-family: inherit; }
             <a href="explore.php?author=<?= $post['author_id'] ?>" class="card-author">
               <?= htmlspecialchars($post['author_name'] ?? 'Anonymous') ?>
             </a>
-            <span class="card-sep">·</span>
+            <span class="card-sep">Â·</span>
             <span title="<?= date('F j, Y \a\t g:i A', strtotime($post['created_at'])) ?>">
               <?= function_exists('time_ago') ? time_ago($post['created_at']) : date('M d, Y', strtotime($post['created_at'])) ?>
             </span>
@@ -797,7 +798,7 @@ button { font-family: inherit; }
       $ps = max(1, $page_num-2); $pe = min($total_pages, $page_num+2);
       if ($ps > 1):
       ?><a href="?page=1" class="pg-btn">1</a><?php
-      if ($ps > 2) echo '<span class="pg-btn dots">…</span>';
+      if ($ps > 2) echo '<span class="pg-btn dots">â€¦</span>';
       endif;
 
       for ($i = $ps; $i <= $pe; $i++):
@@ -805,7 +806,7 @@ button { font-family: inherit; }
       endfor;
 
       if ($pe < $total_pages):
-        if ($pe < $total_pages-1) echo '<span class="pg-btn dots">…</span>';
+        if ($pe < $total_pages-1) echo '<span class="pg-btn dots">â€¦</span>';
       ?><a href="?page=<?= $total_pages ?>" class="pg-btn"><?= $total_pages ?></a><?php
       endif;
       ?>
@@ -819,7 +820,7 @@ button { font-family: inherit; }
 
   <?php else: ?>
     <div class="bm-empty">
-      <span class="bm-empty-icon">🔖</span>
+      <span class="bm-empty-icon">ðŸ”–</span>
       <h3>No bookmarks yet</h3>
       <p>Browse the blog and tap the bookmark icon on posts you want to save for later.</p>
       <a class="btn-browse" href="explore.php">
@@ -833,7 +834,7 @@ button { font-family: inherit; }
 
 </div><!-- /.bm-body -->
 
-<!-- ══════ SHARE MODAL ══════ -->
+<!-- â•â•â•â•â•â• SHARE MODAL â•â•â•â•â•â• -->
 <div class="modal-overlay" id="shareModal">
   <div class="modal-box">
     <div class="modal-head">
@@ -876,14 +877,14 @@ button { font-family: inherit; }
 <div class="toast-dock" id="toastDock"></div>
 
 <script>
-/* ── State ── */
+/* â”€â”€ State â”€â”€ */
 let _share = { postId: null, title: '', url: '' };
 
-/* ── Modal ── */
+/* â”€â”€ Modal â”€â”€ */
 function openModal()  { document.getElementById('shareModal').classList.add('open'); document.body.style.overflow = 'hidden'; }
 function closeModal() { document.getElementById('shareModal').classList.remove('open'); document.body.style.overflow = ''; }
 
-/* ── Share ── */
+/* â”€â”€ Share â”€â”€ */
 function sharePost(platform) {
   const t = encodeURIComponent(_share.title), u = encodeURIComponent(_share.url);
   const map = {
@@ -909,7 +910,7 @@ function fallback(text) {
   ta.remove();
 }
 
-/* ── Toast ── */
+/* â”€â”€ Toast â”€â”€ */
 function toast(msg, type = 'info') {
   const dock = document.getElementById('toastDock');
   const el   = Object.assign(document.createElement('div'), { className: `toast toast-${type}`, textContent: msg });
@@ -917,7 +918,7 @@ function toast(msg, type = 'info') {
   setTimeout(() => { el.style.cssText += 'opacity:0;transition:opacity .3s'; setTimeout(() => el.remove(), 300); }, 3200);
 }
 
-/* ── Wire up ── */
+/* â”€â”€ Wire up â”€â”€ */
 document.addEventListener('DOMContentLoaded', () => {
 
   /* bookmark remove */
@@ -969,4 +970,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <?php include '../shared/footer.php'; ?>
+
 

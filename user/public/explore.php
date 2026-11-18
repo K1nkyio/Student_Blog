@@ -1,10 +1,11 @@
 <?php
 /**
- * Blog System — Explore Page
+ * Blog System â€” Explore Page
  * Paginated post listing with filtering, search, bookmarks, likes & share
  */
 
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -13,7 +14,7 @@ require_once '../shared/csrf.php';
 
 $user_ip = function_exists('get_client_ip') ? get_client_ip() : ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
 
-// ── Pagination & filter setup ──
+// â”€â”€ Pagination & filter setup â”€â”€
 $posts_per_page  = 9;
 $page_num    = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $offset          = ($page_num - 1) * $posts_per_page;
@@ -27,7 +28,7 @@ $sort            = isset($_GET['sort'])     ? $_GET['sort']               : 'new
 $valid_sorts = ['newest', 'oldest', 'comments'];
 if (!in_array($sort, $valid_sorts)) $sort = 'newest';
 
-// ── Build WHERE ──
+// â”€â”€ Build WHERE â”€â”€
 $where_clauses = ["COALESCE(p.visible, 1) = 1", "COALESCE(p.review_status, 'approved') = 'approved'"];
 $params = []; $types = "";
 
@@ -47,7 +48,7 @@ switch ($sort) {
     default:         $order_sql = "p.created_at DESC";
 }
 
-// ── Count ──
+// â”€â”€ Count â”€â”€
 $count_stmt = $conn->prepare("SELECT COUNT(DISTINCT p.id) as total FROM posts p WHERE $where_sql");
 if (!empty($params)) $count_stmt->bind_param($types, ...$params);
 $count_stmt->execute();
@@ -55,7 +56,7 @@ $total_posts = $count_stmt->get_result()->fetch_assoc()['total'];
 $total_pages = max(1, (int)ceil($total_posts / $posts_per_page));
 $count_stmt->close();
 
-// ── Fetch posts ──
+// â”€â”€ Fetch posts â”€â”€
 $sql = "SELECT p.id, p.title, p.content, p.excerpt, p.image, p.slug, p.created_at, p.view_count,
         u.id as author_id, u.username as author_name, u.avatar as author_avatar,
         c.id as category_id, c.name as category_name, c.slug as category_slug,
@@ -76,7 +77,7 @@ if (!empty($sp2)) $stmt->bind_param($st2, ...$sp2);
 $stmt->execute();
 $posts = $stmt->get_result();
 
-// ── Sidebar data ──
+// â”€â”€ Sidebar data â”€â”€
 $categories = $conn->query("SELECT id, name, slug FROM categories ORDER BY name");
 $tags = $conn->query("SELECT t.id, t.name, t.slug, COUNT(p.id) as post_count
     FROM tags t
@@ -90,7 +91,7 @@ $authors = $conn->query("SELECT u.id, u.username, COUNT(p.id) as post_count
     WHERE COALESCE(p.visible, 1) = 1 AND COALESCE(p.review_status, 'approved') = 'approved'
     GROUP BY u.id, u.username ORDER BY post_count DESC");
 
-// ── Session / bookmarks ──
+// â”€â”€ Session / bookmarks â”€â”€
 $is_logged_in    = is_logged_in();
 $user_id         = get_user_id();
 $bookmarked_posts = [];
@@ -104,7 +105,7 @@ if ($is_logged_in) {
 }
 
 $csrf_token      = generate_csrf_token();
-$page_title      = 'Explore — ' . SITE_NAME;
+$page_title      = 'Explore â€” ' . SITE_NAME;
 $meta_description = 'Explore the latest stories, insights, and student conversations on ' . SITE_NAME;
 
 include '../shared/header.php';
@@ -115,9 +116,9 @@ include '../shared/header.php';
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
-   DESIGN TOKENS — exact match opportunities.php
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DESIGN TOKENS â€” exact match opportunities.php
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -161,12 +162,12 @@ a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 button { font-family: inherit; }
 
-/* ─── page shell ─── */
+/* â”€â”€â”€ page shell â”€â”€â”€ */
 .ex-page { min-height: 100vh; padding-bottom: 6rem; }
 
-/* ═══════════════════════════════════════════
-   HERO — same dark-ink strip as opp-hero
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HERO â€” same dark-ink strip as opp-hero
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .ex-hero {
   background: var(--ink);
   color: #fff;
@@ -279,9 +280,9 @@ button { font-family: inherit; }
   margin-top: .22rem;
 }
 
-/* ═══════════════════════════════════════════
-   STICKY TOOLBAR — mirrors .opp-toolbar
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   STICKY TOOLBAR â€” mirrors .opp-toolbar
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .ex-toolbar {
   border-bottom: 1px solid var(--rule);
   background: var(--bg);
@@ -299,7 +300,7 @@ button { font-family: inherit; }
   flex-wrap: wrap;
 }
 
-/* search — mirrors .search-wrap from opp */
+/* search â€” mirrors .search-wrap from opp */
 .ex-search {
   flex: 1;
   min-width: 200px;
@@ -360,7 +361,7 @@ button { font-family: inherit; }
 .ex-search-btn:hover { background: #2c2a22; }
 .ex-search-btn svg { width: 13px; height: 13px; }
 
-/* sort tabs — same pill shape as filter-chip */
+/* sort tabs â€” same pill shape as filter-chip */
 .ex-sort-wrap { display: flex; gap: .35rem; flex-shrink: 0; }
 .ex-sort-tab {
   display: inline-flex;
@@ -379,7 +380,7 @@ button { font-family: inherit; }
 .ex-sort-tab:hover { border-color: var(--ink-mid); color: var(--ink); }
 .ex-sort-tab.active { background: var(--ink); color: #fff; border-color: var(--ink); font-weight: 600; }
 
-/* ── filter panel ── */
+/* â”€â”€ filter panel â”€â”€ */
 .ex-filter-panel {
   display: none;
   border-bottom: 1px solid var(--rule);
@@ -406,7 +407,7 @@ button { font-family: inherit; }
   margin-right: .25rem;
 }
 
-/* tag chips — mirrors .filter-chip */
+/* tag chips â€” mirrors .filter-chip */
 .tag-chip {
   display: inline-flex;
   align-items: center;
@@ -462,9 +463,9 @@ button { font-family: inherit; }
 }
 .clear-all-link:hover { color: var(--accent); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BODY LAYOUT
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .ex-body {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -486,16 +487,16 @@ button { font-family: inherit; }
 }
 .results-bar strong { color: var(--ink-mid); font-weight: 600; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    POSTS GRID
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .posts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1rem;
 }
 
-/* ── Post card — white card, same shadow + border as opp-row ── */
+/* â”€â”€ Post card â€” white card, same shadow + border as opp-row â”€â”€ */
 .post-card {
   background: #fff;
   border: 1px solid var(--rule-light);
@@ -545,7 +546,7 @@ button { font-family: inherit; }
 }
 .card-no-img svg { width: 28px; height: 28px; color: var(--rule); }
 
-/* category badge — same as .badge from opp */
+/* category badge â€” same as .badge from opp */
 .card-cat {
   position: absolute;
   top: 10px; left: 10px;
@@ -681,7 +682,7 @@ button { font-family: inherit; }
 .like-btn.is-liked { color: var(--accent); }
 .like-btn svg { width: 12px; height: 12px; }
 
-/* "Read" link — same as .btn-ghost small */
+/* "Read" link â€” same as .btn-ghost small */
 .card-read {
   display: inline-flex;
   align-items: center;
@@ -698,9 +699,9 @@ button { font-family: inherit; }
 .card-read:hover { border-color: var(--ink); color: var(--ink); background: var(--bg-warm); }
 .card-read svg { width: 11px; height: 11px; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    EMPTY STATE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .ex-empty {
   grid-column: 1/-1;
   text-align: center;
@@ -728,9 +729,9 @@ button { font-family: inherit; }
 }
 .ex-empty-link:hover { background: #2c2a22; transform: translateY(-1px); }
 
-/* ═══════════════════════════════════════════
-   PAGINATION — matches .opp-pagination
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PAGINATION â€” matches .opp-pagination
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .ex-pagination {
   display: flex;
   align-items: center;
@@ -764,9 +765,9 @@ button { font-family: inherit; }
 .pg-btn.dots     { pointer-events: none; border-color: transparent; background: transparent; }
 .pg-btn svg { width: 11px; height: 11px; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SIDEBAR
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .ex-sidebar { display: flex; flex-direction: column; gap: 1.25rem; }
 
 .sb-card {
@@ -901,9 +902,9 @@ button { font-family: inherit; }
 /* empty widget */
 .sb-empty { font-size: .82rem; color: var(--ink-light); text-align: center; padding: .75rem 0; line-height: 1.6; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SHARE MODAL
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .modal-overlay {
   display: none;
   position: fixed; inset: 0;
@@ -985,9 +986,9 @@ button { font-family: inherit; }
 .s-copy { grid-column: 1/-1; color: var(--ink-mid); }
 .s-copy:hover { background: var(--bg-warm); border-color: var(--ink-mid); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TOAST
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .toast-dock {
   position: fixed; bottom: 1.5rem; right: 1.5rem;
   z-index: 10000; display: flex; flex-direction: column; gap: .4rem;
@@ -1008,9 +1009,9 @@ button { font-family: inherit; }
 .toast-success { background: var(--green); }
 .toast-error   { background: var(--red); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 1080px) {
   .ex-body { grid-template-columns: 1fr; }
   .ex-sidebar { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
@@ -1029,7 +1030,7 @@ button { font-family: inherit; }
 
 <div class="ex-page">
 
-  <!-- ══════ HERO ══════ -->
+  <!-- â•â•â•â•â•â• HERO â•â•â•â•â•â• -->
   <div class="ex-hero">
     <div class="hero-inner">
       <span class="hero-eyebrow"><span class="live-dot"></span> Community Journal</span>
@@ -1048,7 +1049,7 @@ button { font-family: inherit; }
     </div>
   </div>
 
-  <!-- ══════ STICKY TOOLBAR ══════ -->
+  <!-- â•â•â•â•â•â• STICKY TOOLBAR â•â•â•â•â•â• -->
   <div class="ex-toolbar">
     <form method="GET" action="" id="filterForm">
       <div class="ex-toolbar-inner">
@@ -1058,7 +1059,7 @@ button { font-family: inherit; }
             <circle cx="9" cy="9" r="6"/><path d="M15 15l3 3" stroke-linecap="round"/>
           </svg>
           <input type="text" name="search"
-                 placeholder="Search posts…"
+                 placeholder="Search postsâ€¦"
                  value="<?= htmlspecialchars($search) ?>"
                  autocomplete="off">
         </div>
@@ -1147,7 +1148,7 @@ button { font-family: inherit; }
   </div>
   <?php endif; ?>
 
-  <!-- ══════ BODY ══════ -->
+  <!-- â•â•â•â•â•â• BODY â•â•â•â•â•â• -->
   <div class="ex-body">
 
     <!-- posts + pagination -->
@@ -1160,7 +1161,7 @@ button { font-family: inherit; }
       <?php if ($posts->num_rows > 0): ?>
       <div class="posts-grid" data-csrf="<?= htmlspecialchars($csrf_token, ENT_QUOTES) ?>">
         <?php while ($post = $posts->fetch_assoc()):
-          $excerpt     = !empty($post['excerpt']) ? $post['excerpt'] : (function_exists('get_excerpt') ? get_excerpt($post['content'], 150) : substr(strip_tags($post['content']), 0, 150) . '…');
+          $excerpt     = !empty($post['excerpt']) ? $post['excerpt'] : (function_exists('get_excerpt') ? get_excerpt($post['content'], 150) : substr(strip_tags($post['content']), 0, 150) . 'â€¦');
           $is_bm       = in_array($post['id'], $bookmarked_posts);
           $is_liked    = !empty($post['liked_by_ip']);
           $post_url    = !empty($post['slug']) ? "post.php?slug=" . urlencode($post['slug']) : "post.php?id=" . $post['id'];
@@ -1225,7 +1226,7 @@ button { font-family: inherit; }
               <a href="?author=<?= $post['author_id'] ?>" class="card-author">
                 <?= htmlspecialchars($post['author_name'] ?? 'Anonymous') ?>
               </a>
-              <span class="card-sep">·</span>
+              <span class="card-sep">Â·</span>
               <span title="<?= date('F j, Y \a\t g:i A', strtotime($post['created_at'])) ?>">
                 <?= function_exists('time_ago') ? time_ago($post['created_at']) : date('M d, Y', strtotime($post['created_at'])) ?>
               </span>
@@ -1292,7 +1293,7 @@ button { font-family: inherit; }
         $ps = max(1, $page_num-2); $pe = min($total_pages, $page_num+2);
         if ($ps > 1):
         ?><a href="?page=1&<?= $qs ?>" class="pg-btn">1</a><?php
-        if ($ps > 2) echo '<span class="pg-btn dots">…</span>';
+        if ($ps > 2) echo '<span class="pg-btn dots">â€¦</span>';
         endif;
 
         for ($i = $ps; $i <= $pe; $i++):
@@ -1301,7 +1302,7 @@ button { font-family: inherit; }
         endfor;
 
         if ($pe < $total_pages):
-          if ($pe < $total_pages-1) echo '<span class="pg-btn dots">…</span>';
+          if ($pe < $total_pages-1) echo '<span class="pg-btn dots">â€¦</span>';
         ?><a href="?page=<?= $total_pages ?>&<?= $qs ?>" class="pg-btn"><?= $total_pages ?></a><?php
         endif;
         ?>
@@ -1317,7 +1318,7 @@ button { font-family: inherit; }
       <?php else: ?>
       <div class="posts-grid">
         <div class="ex-empty">
-          <span class="ex-empty-icon">🔍</span>
+          <span class="ex-empty-icon">ðŸ”</span>
           <h3>Nothing found</h3>
           <p>No posts match your current filters. Try broadening your search or clearing the filters.</p>
           <a href="explore.php" class="ex-empty-link">
@@ -1329,7 +1330,7 @@ button { font-family: inherit; }
       <?php endif; ?>
     </div>
 
-    <!-- ══════ SIDEBAR ══════ -->
+    <!-- â•â•â•â•â•â• SIDEBAR â•â•â•â•â•â• -->
     <aside class="ex-sidebar">
 
       <!-- Subscribe -->
@@ -1408,7 +1409,7 @@ button { font-family: inherit; }
           </p>
           <a href="bookmarks.php" class="sb-btn-ghost" style="margin-top:.6rem">View all bookmarks</a>
           <?php else: ?>
-          <p class="sb-empty">Bookmark any post using the bookmark icon — it'll appear here.</p>
+          <p class="sb-empty">Bookmark any post using the bookmark icon â€” it'll appear here.</p>
           <?php endif; ?>
         </div>
       </div>
@@ -1418,7 +1419,7 @@ button { font-family: inherit; }
   </div><!-- /.ex-body -->
 </div><!-- /.ex-page -->
 
-<!-- ══════ SHARE MODAL ══════ -->
+<!-- â•â•â•â•â•â• SHARE MODAL â•â•â•â•â•â• -->
 <div class="modal-overlay" id="shareModal">
   <div class="modal-box">
     <div class="modal-head">
@@ -1462,14 +1463,14 @@ button { font-family: inherit; }
 <div class="toast-dock" id="toastDock"></div>
 
 <script>
-/* ── State ── */
+/* â”€â”€ State â”€â”€ */
 let _share = { postId: null, title: '', url: '' };
 
-/* ── Modal ── */
+/* â”€â”€ Modal â”€â”€ */
 function openModal() { document.getElementById('shareModal').classList.add('open'); document.body.style.overflow = 'hidden'; }
 function closeModal() { document.getElementById('shareModal').classList.remove('open'); document.body.style.overflow = ''; }
 
-/* ── Share ── */
+/* â”€â”€ Share â”€â”€ */
 function sharePost(platform) {
   const t = encodeURIComponent(_share.title), u = encodeURIComponent(_share.url);
   const map = {
@@ -1495,7 +1496,7 @@ function fallback(text) {
   ta.remove();
 }
 
-/* ── Toast ── */
+/* â”€â”€ Toast â”€â”€ */
 function toast(msg, type = 'info') {
   const dock = document.getElementById('toastDock');
   const el = Object.assign(document.createElement('div'), { className: `toast toast-${type}`, textContent: msg });
@@ -1503,11 +1504,11 @@ function toast(msg, type = 'info') {
   setTimeout(() => { el.style.cssText += 'opacity:0;transition:opacity .3s'; setTimeout(() => el.remove(), 300); }, 3200);
 }
 
-/* ── Subscribe ── */
+/* â”€â”€ Subscribe â”€â”€ */
 document.getElementById('subscribeForm')?.addEventListener('submit', function(e) {
   e.preventDefault();
   const btn = document.getElementById('subBtn'), orig = btn.textContent;
-  btn.disabled = true; btn.textContent = 'Subscribing…';
+  btn.disabled = true; btn.textContent = 'Subscribingâ€¦';
   fetch(this.action, { method: 'POST', body: new FormData(this) })
     .then(r => r.json())
     .then(d => { toast(d.message || (d.success ? 'Subscribed!' : 'Failed'), d.success ? 'success' : 'error'); if (d.success) this.reset(); })
@@ -1515,7 +1516,7 @@ document.getElementById('subscribeForm')?.addEventListener('submit', function(e)
     .finally(() => { btn.disabled = false; btn.textContent = orig; });
 });
 
-/* ── Wire up ── */
+/* â”€â”€ Wire up â”€â”€ */
 document.addEventListener('DOMContentLoaded', () => {
   const grid = document.querySelector('.posts-grid');
   const csrf = grid?.dataset.csrf || '';
@@ -1586,4 +1587,5 @@ $stmt->close();
 $conn->close();
 include '../shared/footer.php';
 ?>
+
 

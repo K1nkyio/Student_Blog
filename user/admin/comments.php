@@ -1,5 +1,7 @@
 <?php
 include '../shared/db_connect.php';
+require_once dirname(__DIR__) . '/shared/admin_auth.php';
+require_admin_access($conn);
 
 // Approve or delete actions
 if (isset($_GET['approve'])) {

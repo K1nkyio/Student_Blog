@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -59,7 +60,7 @@ $benefits       = trim((string)($opportunity['benefits'] ?? ''));
 $requirementsList = array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $requirements))));
 $benefitsList     = array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $benefits))));
 
-$page_title      = htmlspecialchars($opportunity['title']) . ' — Opportunity';
+$page_title      = htmlspecialchars($opportunity['title']) . ' â€” Opportunity';
 $meta_description = 'Opportunity details on ' . SITE_NAME;
 
 include '../shared/header.php';
@@ -70,9 +71,9 @@ include '../shared/header.php';
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    TOKENS
-───────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :root {
   --bg:         #f5f2ed;
   --bg-warm:    #ede9e1;
@@ -99,9 +100,9 @@ include '../shared/header.php';
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    BASE
-───────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .opp-page {
   font-family: var(--font-sans);
   background: var(--bg);
@@ -110,9 +111,9 @@ include '../shared/header.php';
   padding-bottom: 6rem;
 }
 
-/* ─────────────────────────────────────────────
-   HERO — full-width strip, no box
-───────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   HERO â€” full-width strip, no box
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .opp-hero {
   background: var(--ink);
   color: #fff;
@@ -209,9 +210,9 @@ include '../shared/header.php';
 .fact-item i { font-size: .72rem; }
 .fact-item strong { color: rgba(255,255,255,.85); font-weight: 500; }
 
-/* ─────────────────────────────────────────────
-   DEADLINE TICKER — sits right under hero
-───────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   DEADLINE TICKER â€” sits right under hero
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .deadline-ticker {
   background: var(--ink);
   border-top: 1px solid rgba(255,255,255,.08);
@@ -283,16 +284,16 @@ include '../shared/header.php';
   transition: width 1s ease;
 }
 
-/* ─────────────────────────────────────────────
-   CONTENT — open layout, no containers
-───────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   CONTENT â€” open layout, no containers
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .opp-content {
   max-width: var(--max-w);
   margin: 0 auto;
   padding: 0 var(--gutter);
 }
 
-/* ── Section headings ── */
+/* â”€â”€ Section headings â”€â”€ */
 .section-heading {
   display: flex;
   align-items: center;
@@ -325,7 +326,7 @@ include '../shared/header.php';
 .sh-icon.blue   { background: var(--sky-dim);    color: var(--sky); }
 .sh-icon.green  { background: var(--green-dim);  color: var(--green); }
 
-/* ── Description section ── */
+/* â”€â”€ Description section â”€â”€ */
 .section-description {
   padding: 3rem 0 2.5rem;
   border-bottom: 1px solid var(--rule-light);
@@ -352,7 +353,7 @@ include '../shared/header.php';
   margin: .05em .12em 0 0;
 }
 
-/* ── Two-column grid for Req + Benefits ── */
+/* â”€â”€ Two-column grid for Req + Benefits â”€â”€ */
 .two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -370,7 +371,7 @@ include '../shared/header.php';
   padding-left: 2.5rem;
 }
 
-/* ── Check / benefit items ── */
+/* â”€â”€ Check / benefit items â”€â”€ */
 .item-list {
   list-style: none;
   display: flex;
@@ -406,7 +407,7 @@ include '../shared/header.php';
   background: var(--bg-warm);
 }
 
-/* ── Actions strip ── */
+/* â”€â”€ Actions strip â”€â”€ */
 .section-actions {
   padding: 2.5rem 0 0;
   display: flex;
@@ -498,9 +499,9 @@ include '../shared/header.php';
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ─────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    RESPONSIVE
-───────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (max-width: 620px) {
   .two-col {
     grid-template-columns: 1fr;
@@ -519,9 +520,9 @@ include '../shared/header.php';
 }
 </style>
 
-<!-- ═══════════════════════════════════════
+<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
      HERO  (full-width, no card)
-════════════════════════════════════════ -->
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
 <div class="opp-page">
 
   <div class="opp-hero">
@@ -589,7 +590,7 @@ include '../shared/header.php';
   </div>
   <?php endif; ?>
 
-  <!-- ═══ OPEN CONTENT ═══ -->
+  <!-- â•â•â• OPEN CONTENT â•â•â• -->
   <div class="opp-content">
 
     <!-- Description -->
@@ -677,3 +678,4 @@ include '../shared/header.php';
 </div><!-- /.opp-page -->
 
 <?php include '../shared/footer.php'; ?>
+

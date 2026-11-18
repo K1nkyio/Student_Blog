@@ -1,8 +1,9 @@
 <?php
-session_start();
-session_unset();
-session_destroy();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
+destroy_project_session();
 header("Location: register.php");
 exit();
 ?>
+
 

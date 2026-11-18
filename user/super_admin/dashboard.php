@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 
 if (empty($_SESSION['admin'])) {
@@ -265,7 +266,7 @@ $active_tab = 'dashboard';
             <div>
               <strong><?php echo htmlspecialchars($row['action']); ?></strong>
               <?php if (!empty($row['admin_name'])): ?>
-                <span> — <?php echo htmlspecialchars($row['admin_name']); ?></span>
+                <span> â€” <?php echo htmlspecialchars($row['admin_name']); ?></span>
               <?php endif; ?>
               <?php if (!empty($row['actor_name'])): ?>
                 <span class="activity-meta"> (by <?php echo htmlspecialchars($row['actor_name']); ?>)</span>
@@ -287,3 +288,4 @@ $active_tab = 'dashboard';
 </div>
 
 <?php include '../admin/includes/footer.php'; ?>
+

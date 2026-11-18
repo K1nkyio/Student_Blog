@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 if (!isset($_SESSION['admin'])) {
     header('Location: register.php');
@@ -8,6 +9,8 @@ if (!isset($_SESSION['admin'])) {
 }
 
 include '../shared/db_connect.php';
+require_once dirname(__DIR__) . '/shared/admin_auth.php';
+require_admin_access($conn);
 include '../shared/functions.php';
 
 $categories = [];
@@ -88,11 +91,11 @@ include 'includes/header.php';
 ?>
 
 <style>
-/* ═══════════════════════════════════════════
-   POST FORM — tokens from admin-header.php
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   POST FORM â€” tokens from admin-header.php
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── PAGE HEADING ── */
+/* â”€â”€ PAGE HEADING â”€â”€ */
 .pf-heading {
   display: flex;
   align-items: flex-start;
@@ -156,7 +159,7 @@ include 'includes/header.php';
   font-weight: 300;
 }
 
-/* ── MINI STAT STRIP ── */
+/* â”€â”€ MINI STAT STRIP â”€â”€ */
 .pf-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -226,7 +229,7 @@ include 'includes/header.php';
   letter-spacing: -.02em;
 }
 
-/* ── ALERTS ── */
+/* â”€â”€ ALERTS â”€â”€ */
 .pf-alert {
   display: flex;
   align-items: flex-start;
@@ -242,7 +245,7 @@ include 'includes/header.php';
 .pf-alert--error   { background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(176,48,48,.18); }
 .pf-alert--success { background: var(--green-dim); color: var(--green); border: 1px solid rgba(26,122,74,.18); }
 
-/* ── FORM CARD ── */
+/* â”€â”€ FORM CARD â”€â”€ */
 .pf-card {
   background: #fff;
   border: 1px solid var(--rule-light);
@@ -278,7 +281,7 @@ include 'includes/header.php';
   gap: 1.25rem;
 }
 
-/* ── FIELD GROUPS ── */
+/* â”€â”€ FIELD GROUPS â”€â”€ */
 .pf-field { margin-bottom: 1.4rem; }
 .pf-field:last-child { margin-bottom: 0; }
 
@@ -301,7 +304,7 @@ include 'includes/header.php';
   margin-top: 2px;
 }
 
-/* inputs — same as admin-header .form-control */
+/* inputs â€” same as admin-header .form-control */
 .pf-input, .pf-select, .pf-textarea {
   width: 100%;
   border: 1.5px solid var(--rule);
@@ -354,7 +357,7 @@ include 'includes/header.php';
 }
 .pf-hint svg { width: 12px; height: 12px; flex-shrink: 0; margin-top: .1rem; }
 
-/* ── IMAGE UPLOAD ── */
+/* â”€â”€ IMAGE UPLOAD â”€â”€ */
 .pf-upload-wrap { position: relative; }
 .pf-upload-input { position: absolute; left: -9999px; }
 
@@ -420,7 +423,7 @@ include 'includes/header.php';
   display: block;
 }
 
-/* ── VISIBILITY TOGGLE ── */
+/* â”€â”€ VISIBILITY TOGGLE â”€â”€ */
 .pf-toggle-wrap {
   display: flex;
   align-items: center;
@@ -481,14 +484,14 @@ include 'includes/header.php';
   transform: translateX(18px);
 }
 
-/* ── DIVIDER ── */
+/* â”€â”€ DIVIDER â”€â”€ */
 .pf-divider {
   height: 1px;
   background: var(--rule-light);
   margin: 1.75rem 0;
 }
 
-/* ── FORM ACTIONS ── */
+/* â”€â”€ FORM ACTIONS â”€â”€ */
 .pf-actions {
   display: flex;
   gap: .75rem;
@@ -498,7 +501,7 @@ include 'includes/header.php';
   border-top: 1px solid var(--rule-light);
 }
 
-/* submit — .btn-primary from admin-header */
+/* submit â€” .btn-primary from admin-header */
 .pf-btn-submit {
   display: inline-flex;
   align-items: center;
@@ -524,7 +527,7 @@ include 'includes/header.php';
 .pf-btn-submit:disabled { background: var(--rule); color: var(--ink-light); cursor: not-allowed; transform: none; }
 .pf-btn-submit svg { width: 13px; height: 13px; }
 
-/* cancel — .btn-ghost */
+/* cancel â€” .btn-ghost */
 .pf-btn-cancel {
   display: inline-flex;
   align-items: center;
@@ -545,7 +548,7 @@ include 'includes/header.php';
 .pf-btn-cancel:hover { border-color: var(--ink-mid); background: var(--bg-warm); color: var(--ink); }
 .pf-btn-cancel svg { width: 12px; height: 12px; }
 
-/* ── RESPONSIVE ── */
+/* â”€â”€ RESPONSIVE â”€â”€ */
 @media (max-width: 640px) {
   .pf-stats { grid-template-columns: 1fr; }
   .pf-row-2 { grid-template-columns: 1fr; }
@@ -554,7 +557,7 @@ include 'includes/header.php';
 }
 </style>
 
-<!-- ══ HEADING ══ -->
+<!-- â•â• HEADING â•â• -->
 <div class="pf-heading">
   <div>
     <div class="pf-breadcrumb">
@@ -568,7 +571,7 @@ include 'includes/header.php';
   </div>
 </div>
 
-<!-- ══ MINI STATS ══ -->
+<!-- â•â• MINI STATS â•â• -->
 <div class="pf-stats">
   <a href="dashboard.php" class="pf-stat pf-stat--posts">
     <div class="pf-stat-icon">
@@ -599,7 +602,7 @@ include 'includes/header.php';
   </a>
 </div>
 
-<!-- ══ ALERTS ══ -->
+<!-- â•â• ALERTS â•â• -->
 <?php if ($error): ?>
 <div class="pf-alert pf-alert--error">
   <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -613,7 +616,7 @@ include 'includes/header.php';
 </div>
 <?php endif; ?>
 
-<!-- ══ FORM CARD ══ -->
+<!-- â•â• FORM CARD â•â• -->
 <div class="pf-card">
   <div class="pf-card-head">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
@@ -630,7 +633,7 @@ include 'includes/header.php';
             <span class="pf-label-hint">A clear, descriptive headline for your post</span>
           </label>
           <input type="text" id="title" name="title" class="pf-input"
-                 placeholder="Enter your post title…" required>
+                 placeholder="Enter your post titleâ€¦" required>
         </div>
         <div class="pf-field">
           <label class="pf-label" for="category_id">
@@ -638,7 +641,7 @@ include 'includes/header.php';
             <span class="pf-label-hint">Choose the most relevant category</span>
           </label>
           <select id="category_id" name="category_id" class="pf-select" required>
-            <option value="">— Select a category —</option>
+            <option value="">â€” Select a category â€”</option>
             <?php foreach ($categories as $cat): ?>
               <option value="<?php echo htmlspecialchars($cat['id']); ?>">
                 <?php echo htmlspecialchars($cat['name']); ?>
@@ -661,10 +664,10 @@ include 'includes/header.php';
       <div class="pf-field">
         <label class="pf-label" for="excerpt">
           Excerpt
-          <span class="pf-label-hint">A brief summary shown in post previews (150–300 characters)</span>
+          <span class="pf-label-hint">A brief summary shown in post previews (150â€“300 characters)</span>
         </label>
         <textarea id="excerpt" name="excerpt" class="pf-textarea" style="min-height:100px;"
-                  placeholder="Write a compelling summary…" maxlength="500"></textarea>
+                  placeholder="Write a compelling summaryâ€¦" maxlength="500"></textarea>
       </div>
 
       <!-- Content -->
@@ -674,21 +677,21 @@ include 'includes/header.php';
           <span class="pf-label-hint">Write your full post content</span>
         </label>
         <textarea id="content" name="content" class="pf-textarea"
-                  placeholder="Start writing…" required></textarea>
+                  placeholder="Start writingâ€¦" required></textarea>
       </div>
 
       <!-- Image upload -->
       <div class="pf-field">
         <label class="pf-label">
           Featured Image
-          <span class="pf-label-hint">Optional — upload a cover image for your post</span>
+          <span class="pf-label-hint">Optional â€” upload a cover image for your post</span>
         </label>
         <div class="pf-upload-wrap">
           <input type="file" name="image" id="imageUpload" class="pf-upload-input" accept="image/*">
           <label for="imageUpload" class="pf-upload-label" id="uploadLabel">
-            <span class="pf-upload-icon">🖼</span>
+            <span class="pf-upload-icon">ðŸ–¼</span>
             <span class="pf-upload-text">Click to upload or drag &amp; drop</span>
-            <span class="pf-upload-hint">PNG, JPG, WEBP — max 5 MB</span>
+            <span class="pf-upload-hint">PNG, JPG, WEBP â€” max 5 MB</span>
           </label>
           <div class="pf-upload-name" id="uploadName"></div>
         </div>
@@ -735,7 +738,7 @@ include 'includes/header.php';
   input?.addEventListener('change', function () {
     const name = this.files[0]?.name;
     if (name) {
-      uploadName.textContent = '✓ ' + name;
+      uploadName.textContent = 'âœ“ ' + name;
       uploadName.style.display = 'block';
       uploadLabel.style.borderColor = 'var(--green)';
       uploadLabel.style.borderStyle = 'solid';
@@ -769,7 +772,7 @@ include 'includes/header.php';
     const btn = document.getElementById('submitBtn');
     if (btn) {
       btn.disabled = true;
-      btn.innerHTML = '<svg style="animation:spin .7s linear infinite" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/></svg> Submitting…';
+      btn.innerHTML = '<svg style="animation:spin .7s linear infinite" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/></svg> Submittingâ€¦';
     }
   });
 
@@ -780,3 +783,4 @@ include 'includes/header.php';
 </script>
 
 <?php include 'includes/footer.php'; ?>
+

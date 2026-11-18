@@ -4,7 +4,8 @@ header('Content-Type: application/json');
 ob_start();
 // Hide PHP notices/warnings from output; we'll convert errors to JSON below
 ini_set('display_errors', '0');
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 // Defensive error handling: convert PHP errors/exceptions to JSON
@@ -117,3 +118,4 @@ echo json_encode([
     'action' => $action_taken
 ]);
 exit;
+

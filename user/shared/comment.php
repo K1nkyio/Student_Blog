@@ -4,7 +4,8 @@ header('Content-Type: application/json');
 ob_start();
 // Hide PHP notices/warnings from output; we'll convert errors to JSON below
 ini_set('display_errors', '0');
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 
 // Defensive error handling: convert PHP errors/exceptions to JSON
 set_error_handler(function ($severity, $message, $file, $line) {
@@ -179,3 +180,4 @@ if ($insertComment->execute()) {
 $conn->close();
 exit;
 ?>
+

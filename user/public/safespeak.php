@@ -4,7 +4,8 @@
  * Allows students to submit confidential concerns anonymously
  */
 
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -15,7 +16,7 @@ require_once '../shared/csrf.php';
 $csrf_token = generate_csrf_token();
 
 // Page metadata
-$page_title = 'SafeSpeak — Anonymous Reporting';
+$page_title = 'SafeSpeak â€” Anonymous Reporting';
 $meta_description = 'A secure and anonymous channel for students to report concerns, issues, or feedback confidentially. Your identity is protected.';
 
 // Rate limiting check (basic IP-based)
@@ -115,9 +116,9 @@ include '../shared/header.php';
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DESIGN TOKENS  (matches opportunities.php)
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -162,9 +163,9 @@ include '../shared/header.php';
   padding-bottom: 6rem;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HERO
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .ss-hero {
   background: var(--ink);
   color: #fff;
@@ -275,9 +276,9 @@ include '../shared/header.php';
 }
 .trust-badge svg { width: 12px; height: 12px; color: var(--green); flex-shrink: 0; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BODY LAYOUT
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .ss-body {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -292,9 +293,9 @@ include '../shared/header.php';
   .ss-body { grid-template-columns: 1fr; }
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    FORM CARD
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .ss-form-card {
   background: #fff;
   border: 1px solid var(--rule-light);
@@ -334,7 +335,7 @@ include '../shared/header.php';
 
 .form-card-body { padding: 1.75rem; }
 
-/* ── messages ── */
+/* â”€â”€ messages â”€â”€ */
 .ss-message {
   display: flex;
   align-items: flex-start;
@@ -373,7 +374,7 @@ include '../shared/header.php';
 }
 .ss-rate-warning svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: .15rem; }
 
-/* ── form groups ── */
+/* â”€â”€ form groups â”€â”€ */
 .form-group { margin-bottom: 1.35rem; }
 
 .form-label {
@@ -450,7 +451,7 @@ include '../shared/header.php';
 .char-count.warn { color: var(--accent); }
 .char-count.danger { color: var(--red); }
 
-/* ── two-col row ── */
+/* â”€â”€ two-col row â”€â”€ */
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -460,7 +461,7 @@ include '../shared/header.php';
   .form-row { grid-template-columns: 1fr; }
 }
 
-/* ── urgency pills ── */
+/* â”€â”€ urgency pills â”€â”€ */
 .urgency-options {
   display: flex;
   gap: .5rem;
@@ -494,7 +495,7 @@ include '../shared/header.php';
 .urgency-label[data-level="critical"] .dot { background: var(--red); }
 .urgency-label:has(input:checked) .dot { background: rgba(255,255,255,.7); }
 
-/* ── consent box ── */
+/* â”€â”€ consent box â”€â”€ */
 .consent-box {
   display: flex;
   align-items: flex-start;
@@ -520,7 +521,7 @@ include '../shared/header.php';
   cursor: pointer;
 }
 
-/* ── submit button ── */
+/* â”€â”€ submit button â”€â”€ */
 .form-divider {
   height: 1px;
   background: var(--rule-light);
@@ -559,9 +560,9 @@ include '../shared/header.php';
 }
 .ss-submit-btn svg { width: 14px; height: 14px; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    SIDEBAR
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .ss-sidebar {
   display: flex;
   flex-direction: column;
@@ -679,7 +680,7 @@ include '../shared/header.php';
 
 <div class="ss-page">
 
-  <!-- ══════════ HERO ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• HERO â•â•â•â•â•â•â•â•â•â• -->
   <div class="ss-hero">
     <div class="hero-inner">
       <span class="hero-eyebrow"><span class="lock-icon"></span> Confidential channel</span>
@@ -706,10 +707,10 @@ include '../shared/header.php';
     </div>
   </div>
 
-  <!-- ══════════ BODY ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• BODY â•â•â•â•â•â•â•â•â•â• -->
   <div class="ss-body">
 
-    <!-- ── FORM ── -->
+    <!-- â”€â”€ FORM â”€â”€ -->
     <div class="ss-form-card">
       <div class="form-card-header">
         <h2>
@@ -772,10 +773,10 @@ include '../shared/header.php';
             <div class="form-group" style="margin-bottom:0">
               <label class="form-label" for="urgency">Urgency</label>
               <select id="urgency" name="urgency" class="form-select">
-                <option value="low"      <?php echo ($_POST['urgency'] ?? '') === 'low'      ? 'selected' : ''; ?>>Low — General feedback</option>
-                <option value="medium"   <?php echo ($_POST['urgency'] ?? 'medium') === 'medium' ? 'selected' : ''; ?>>Medium — Needs attention</option>
-                <option value="high"     <?php echo ($_POST['urgency'] ?? '') === 'high'     ? 'selected' : ''; ?>>High — Urgent concern</option>
-                <option value="critical" <?php echo ($_POST['urgency'] ?? '') === 'critical' ? 'selected' : ''; ?>>Critical — Immediate action</option>
+                <option value="low"      <?php echo ($_POST['urgency'] ?? '') === 'low'      ? 'selected' : ''; ?>>Low â€” General feedback</option>
+                <option value="medium"   <?php echo ($_POST['urgency'] ?? 'medium') === 'medium' ? 'selected' : ''; ?>>Medium â€” Needs attention</option>
+                <option value="high"     <?php echo ($_POST['urgency'] ?? '') === 'high'     ? 'selected' : ''; ?>>High â€” Urgent concern</option>
+                <option value="critical" <?php echo ($_POST['urgency'] ?? '') === 'critical' ? 'selected' : ''; ?>>Critical â€” Immediate action</option>
               </select>
             </div>
           </div>
@@ -788,7 +789,7 @@ include '../shared/header.php';
               maxlength="5000"
               required><?php echo htmlspecialchars($_POST['message'] ?? ''); ?></textarea>
             <div class="char-row">
-              <span class="form-help">Be as specific as possible — it helps us act faster.</span>
+              <span class="form-help">Be as specific as possible â€” it helps us act faster.</span>
               <span class="char-count" id="charCount">0 / 5000</span>
             </div>
           </div>
@@ -799,7 +800,7 @@ include '../shared/header.php';
             <input type="email" id="contact_email" name="contact_email" class="form-input"
               placeholder="your.email@example.com"
               value="<?php echo htmlspecialchars($_POST['contact_email'] ?? ''); ?>">
-            <div class="form-help">If provided, it is hashed immediately — we never store your actual address.</div>
+            <div class="form-help">If provided, it is hashed immediately â€” we never store your actual address.</div>
           </div>
 
           <!-- Consent -->
@@ -823,7 +824,7 @@ include '../shared/header.php';
       </div>
     </div>
 
-    <!-- ── SIDEBAR ── -->
+    <!-- â”€â”€ SIDEBAR â”€â”€ -->
     <aside class="ss-sidebar">
 
       <!-- Privacy -->
@@ -839,7 +840,7 @@ include '../shared/header.php';
           </li>
           <li>
             <span class="check"><svg fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
-            IP addresses are hashed — never stored raw
+            IP addresses are hashed â€” never stored raw
           </li>
           <li>
             <span class="check"><svg fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
@@ -891,12 +892,12 @@ include '../shared/header.php';
         <div class="contact-links">
           <div class="contact-link-item">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.61 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9a16 16 0 0 0 6.91 6.91l.82-.82a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            <span>Emergency — contact campus security or local authorities</span>
+            <span>Emergency â€” contact campus security or local authorities</span>
           </div>
           <div class="sidebar-rule"></div>
           <div class="contact-link-item">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            <span>Counselling — use <a href="#">student support services</a></span>
+            <span>Counselling â€” use <a href="#">student support services</a></span>
           </div>
           <div class="contact-link-item">
             <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -917,7 +918,7 @@ include '../shared/header.php';
   const charCount = document.getElementById('charCount');
   const maxLen    = 5000;
 
-  /* ── Character counter ── */
+  /* â”€â”€ Character counter â”€â”€ */
   if (textarea && charCount) {
     const update = () => {
       const len = textarea.value.length;
@@ -928,16 +929,16 @@ include '../shared/header.php';
     update();
   }
 
-  /* ── Form submit state ── */
+  /* â”€â”€ Form submit state â”€â”€ */
   if (form && submitBtn) {
     form.addEventListener('submit', function (e) {
       if (!this.checkValidity()) { e.preventDefault(); return; }
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 1 1-9-9"/></svg> Submitting…';
+      submitBtn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 1 1-9-9"/></svg> Submittingâ€¦';
     });
   }
 
-  /* ── Inline validation feedback ── */
+  /* â”€â”€ Inline validation feedback â”€â”€ */
   if (form) {
     form.querySelectorAll('[required]').forEach(field => {
       field.addEventListener('blur', function () {
@@ -950,7 +951,7 @@ include '../shared/header.php';
     });
   }
 
-  /* ── Spin keyframe ── */
+  /* â”€â”€ Spin keyframe â”€â”€ */
   const style = document.createElement('style');
   style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
   document.head.appendChild(style);
@@ -961,3 +962,4 @@ include '../shared/header.php';
 $conn->close();
 include '../shared/footer.php';
 ?>
+

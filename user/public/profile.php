@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 require_once '../shared/db_connect.php';
 require_once '../shared/functions.php';
 require_once '../shared/csrf.php';
@@ -146,9 +147,9 @@ include '../shared/header.php';
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DESIGN TOKENS
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -190,9 +191,9 @@ include '../shared/header.php';
   padding-bottom: 6rem;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HERO
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .profile-hero {
   background: var(--ink);
   color: #fff;
@@ -311,9 +312,9 @@ include '../shared/header.php';
   margin-top: .25rem;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TOOLBAR / TABS
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .profile-toolbar {
   border-bottom: 1px solid var(--rule);
   background: var(--bg);
@@ -362,9 +363,9 @@ include '../shared/header.php';
 }
 .profile-tab svg { width: 13px; height: 13px; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BODY
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .profile-body {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -404,7 +405,7 @@ include '../shared/header.php';
   .hero-sub { max-width: 100%; }
 }
 
-/* ── Flash ── */
+/* â”€â”€ Flash â”€â”€ */
 .flash-wrap {
   max-width: var(--max-w);
   margin: 1.5rem auto 0;
@@ -421,7 +422,7 @@ include '../shared/header.php';
 .flash-msg.success { background: var(--green-dim); color: var(--green); border-color: var(--green); }
 .flash-msg.error   { background: var(--red-dim);   color: var(--red);   border-color: var(--red); }
 
-/* ── Sidebar ── */
+/* â”€â”€ Sidebar â”€â”€ */
 .profile-sidebar {
   background: #fff;
   border: 1px solid var(--rule-light);
@@ -517,11 +518,11 @@ include '../shared/header.php';
 .sidebar-link:hover { background: var(--bg-warm); color: var(--ink); }
 .sidebar-link svg { width: 13px; height: 13px; opacity: .6; flex-shrink: 0; }
 
-/* ── Tab pane ── */
+/* â”€â”€ Tab pane â”€â”€ */
 .tab-pane { display: none; }
 .tab-pane.active { display: block; }
 
-/* ── Cards ── */
+/* â”€â”€ Cards â”€â”€ */
 .form-card {
   background: #fff;
   border: 1px solid var(--rule-light);
@@ -551,7 +552,7 @@ include '../shared/header.php';
 }
 .form-card.danger .card-heading { color: var(--red); }
 
-/* ── Form elements ── */
+/* â”€â”€ Form elements â”€â”€ */
 .form-group { margin-bottom: 1.25rem; }
 .form-label {
   display: block;
@@ -595,7 +596,7 @@ include '../shared/header.php';
   margin-top: .3rem;
 }
 
-/* ── Buttons ── */
+/* â”€â”€ Buttons â”€â”€ */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -657,7 +658,7 @@ include '../shared/header.php';
 
 <div class="profile-page">
 
-  <!-- ══════════ HERO ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• HERO â•â•â•â•â•â•â•â•â•â• -->
   <div class="profile-hero">
     <div class="hero-inner">
       <span class="hero-eyebrow">Your account</span>
@@ -689,7 +690,7 @@ include '../shared/header.php';
     </div>
   </div>
 
-  <!-- ══════════ STICKY TABS ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• STICKY TABS â•â•â•â•â•â•â•â•â•â• -->
   <div class="profile-toolbar">
     <div class="profile-toolbar-inner">
       <nav class="profile-tabs">
@@ -721,10 +722,10 @@ include '../shared/header.php';
   </div>
   <?php endif; ?>
 
-  <!-- ══════════ BODY ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• BODY â•â•â•â•â•â•â•â•â•â• -->
   <div class="profile-body">
 
-    <!-- ── Sidebar ── -->
+    <!-- â”€â”€ Sidebar â”€â”€ -->
     <aside class="profile-sidebar">
       <div class="sidebar-avatar">
         <?php if (!empty($user['avatar'])): ?>
@@ -764,7 +765,7 @@ include '../shared/header.php';
       </div>
     </aside>
 
-    <!-- ── Main panes ── -->
+    <!-- â”€â”€ Main panes â”€â”€ -->
     <main>
 
       <!-- Profile Tab -->
@@ -904,3 +905,4 @@ document.querySelectorAll('.profile-tab').forEach(tab => {
 </script>
 
 <?php include '../shared/footer.php'; ?>
+

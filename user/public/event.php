@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -38,14 +39,14 @@ $event = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
 if (!$event) {
-    $page_title = 'Event not found — ' . SITE_NAME;
+    $page_title = 'Event not found â€” ' . SITE_NAME;
     include '../shared/header.php';
     echo '<div style="max-width:900px;margin:3rem auto;padding:0 1.5rem;font-family:sans-serif;">Event not found. <a href="events.php">Back to events</a></div>';
     include '../shared/footer.php';
     exit();
 }
 
-$page_title      = $event['title'] . ' — ' . SITE_NAME;
+$page_title      = $event['title'] . ' â€” ' . SITE_NAME;
 $meta_description = substr(strip_tags($event['description']), 0, 160);
 
 // Detect event type from content
@@ -68,12 +69,12 @@ $typeLabels = [
 $typeLabel = $typeLabels[$typeKey] ?? ucfirst($typeKey);
 
 $typeIcons = [
-    'hackathon'   => '⚡',
-    'workshop'    => '🛠️',
-    'competition' => '🏆',
-    'social'      => '🎉',
+    'hackathon'   => 'âš¡',
+    'workshop'    => 'ðŸ› ï¸',
+    'competition' => 'ðŸ†',
+    'social'      => 'ðŸŽ‰',
 ];
-$typeIcon = $typeIcons[$typeKey] ?? '📅';
+$typeIcon = $typeIcons[$typeKey] ?? 'ðŸ“…';
 
 $dateStr    = '';
 $daysStr    = '';
@@ -106,9 +107,9 @@ include '../shared/header.php';
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DESIGN TOKENS
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -150,9 +151,9 @@ include '../shared/header.php';
   padding-bottom: 6rem;
 }
 
-/* ═══════════════════════════════════════════
-   HERO — full dark strip
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HERO â€” full dark strip
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .event-hero {
   background: var(--ink);
   color: #fff;
@@ -282,9 +283,9 @@ include '../shared/header.php';
 .badge--past        { background: rgba(255,255,255,.08); color: rgba(255,255,255,.4); border: 1px solid rgba(255,255,255,.12); }
 .badge--days        { background: rgba(255,255,255,.08); color: rgba(255,255,255,.55); border: 1px solid rgba(255,255,255,.12); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    STICKY TOOLBAR
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .event-toolbar {
   border-bottom: 1px solid var(--rule);
   background: var(--bg);
@@ -319,9 +320,9 @@ include '../shared/header.php';
 .toolbar-crumb strong { color: var(--ink-mid); font-weight: 600; }
 .toolbar-actions { display: flex; gap: .5rem; }
 
-/* ═══════════════════════════════════════════
-   BODY — two-column layout
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   BODY â€” two-column layout
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .event-body {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -338,7 +339,7 @@ include '../shared/header.php';
   .event-sidebar { order: -1; }
 }
 
-/* ── Main card ── */
+/* â”€â”€ Main card â”€â”€ */
 .event-main-card {
   background: #fff;
   border: 1px solid var(--rule-light);
@@ -400,7 +401,7 @@ include '../shared/header.php';
 }
 .event-desc p + p { margin-top: .75rem; }
 
-/* ── Sidebar ── */
+/* â”€â”€ Sidebar â”€â”€ */
 .event-sidebar {
   display: flex;
   flex-direction: column;
@@ -464,7 +465,7 @@ include '../shared/header.php';
 /* action block */
 .action-block { display: flex; flex-direction: column; gap: .5rem; }
 
-/* ── Buttons ── */
+/* â”€â”€ Buttons â”€â”€ */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -550,7 +551,7 @@ include '../shared/header.php';
 
 <div class="event-page">
 
-  <!-- ══════════ HERO ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• HERO â•â•â•â•â•â•â•â•â•â• -->
   <div class="event-hero">
     <div class="hero-inner">
 
@@ -592,7 +593,7 @@ include '../shared/header.php';
         <?php if ($isPast): ?>
           <span class="badge badge--past">Past Event</span>
         <?php elseif ($deadlineState === 'closing'): ?>
-          <span class="badge badge--closing">⚡ <?= htmlspecialchars($daysStr) ?></span>
+          <span class="badge badge--closing">âš¡ <?= htmlspecialchars($daysStr) ?></span>
         <?php elseif (!empty($daysStr)): ?>
           <span class="badge badge--days"><?= htmlspecialchars($daysStr) ?></span>
         <?php endif; ?>
@@ -601,13 +602,13 @@ include '../shared/header.php';
     </div>
   </div>
 
-  <!-- ══════════ STICKY TOOLBAR ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• STICKY TOOLBAR â•â•â•â•â•â•â•â•â•â• -->
   <div class="event-toolbar">
     <div class="event-toolbar-inner">
       <nav class="toolbar-crumb" aria-label="Breadcrumb">
         <a href="events.php">Events</a>
         <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 1l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <strong><?= htmlspecialchars(mb_strimwidth($event['title'], 0, 48, '…')) ?></strong>
+        <strong><?= htmlspecialchars(mb_strimwidth($event['title'], 0, 48, 'â€¦')) ?></strong>
       </nav>
       <div class="toolbar-actions">
         <?php if (!empty($event['registration_link']) && !$isPast): ?>
@@ -624,10 +625,10 @@ include '../shared/header.php';
     </div>
   </div>
 
-  <!-- ══════════ BODY ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• BODY â•â•â•â•â•â•â•â•â•â• -->
   <div class="event-body">
 
-    <!-- ── Main ── -->
+    <!-- â”€â”€ Main â”€â”€ -->
     <div class="event-main-card">
 
       <?php if (!empty($imageUrl)): ?>
@@ -652,7 +653,7 @@ include '../shared/header.php';
       </div>
     </div>
 
-    <!-- ── Sidebar ── -->
+    <!-- â”€â”€ Sidebar â”€â”€ -->
     <aside class="event-sidebar">
 
       <!-- Details card -->
@@ -749,7 +750,7 @@ include '../shared/header.php';
 </div><!-- /.event-page -->
 
 <script>
-// ── Share ──
+// â”€â”€ Share â”€â”€
 const shareBtn = document.getElementById('shareBtn');
 if (shareBtn) {
   shareBtn.addEventListener('click', async () => {

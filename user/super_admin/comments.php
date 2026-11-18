@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 
 if (empty($_SESSION['admin'])) {
@@ -13,6 +14,8 @@ if (($_SESSION['admin_role'] ?? '') !== 'super_admin') {
 }
 
 include '../shared/db_connect.php';
+require_once dirname(__DIR__) . '/shared/admin_auth.php';
+require_admin_access($conn, 'super_admin');
 
 $status  = $_GET['status'] ?? 'all';
 $allowed = ['all', 'pending', 'approved'];
@@ -58,9 +61,9 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
-   DESIGN TOKENS — mirrors opportunities.php
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DESIGN TOKENS â€” mirrors opportunities.php
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -96,7 +99,7 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ─── page shell ─── */
+/* â”€â”€â”€ page shell â”€â”€â”€ */
 .cm-page {
   font-family: var(--font-sans);
   background: var(--bg);
@@ -105,9 +108,9 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
   padding-bottom: 6rem;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HERO
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cm-hero {
   background: var(--ink);
   color: #fff;
@@ -199,9 +202,9 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
   text-transform: uppercase; color: rgba(255,255,255,.35); display: block; margin-top: .25rem;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TOOLBAR
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cm-toolbar {
   border-bottom: 1px solid var(--rule);
   background: var(--bg);
@@ -234,9 +237,9 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
 }
 .search-wrap input::placeholder { color: var(--ink-light); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BODY
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cm-body {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -279,9 +282,9 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
 }
 .results-bar strong { color: var(--ink-mid); font-weight: 600; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    COMMENT ROWS
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cm-list { display: flex; flex-direction: column; gap: 1rem; }
 
 .cm-row {
@@ -391,9 +394,9 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
 }
 .btn-delete:hover { background: var(--red-dim); border-color: var(--red); transform: translateY(-1px); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    EMPTY STATE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cm-empty {
   text-align: center; padding: 5rem 1rem; color: var(--ink-light);
   border-top: 1px solid var(--rule-light);
@@ -402,9 +405,9 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
 .cm-empty h3 { font-family: var(--font-serif); font-size: 1.3rem; color: var(--ink-mid); margin-bottom: .4rem; }
 .cm-empty p { font-size: .875rem; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PAGINATION
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cm-pagination {
   display: flex; align-items: center; justify-content: center;
   gap: .6rem; margin-top: 2.5rem;
@@ -425,9 +428,9 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
   border-radius: 3px; min-width: 7rem; text-align: center;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    CONFIRM MODAL
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .modal-overlay {
   display: none; position: fixed; inset: 0;
   background: rgba(24,22,15,.55); z-index: 200;
@@ -453,9 +456,9 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
 }
 .btn-ghost:hover { border-color: var(--ink-mid); background: var(--bg-warm); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 640px) {
   .cm-row { grid-template-columns: 40px 1fr; grid-template-rows: auto auto; padding: 1.1rem; }
   .row-actions { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; }
@@ -468,7 +471,7 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
 
 <div class="cm-page">
 
-  <!-- ══════════ HERO ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• HERO â•â•â•â•â•â•â•â•â•â• -->
   <div class="cm-hero">
     <div class="hero-inner">
       <span class="hero-eyebrow"><span class="live-dot"></span> Moderation queue</span>
@@ -491,19 +494,19 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
     </div>
   </div>
 
-  <!-- ══════════ STICKY TOOLBAR ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• STICKY TOOLBAR â•â•â•â•â•â•â•â•â•â• -->
   <div class="cm-toolbar">
     <div class="cm-toolbar-inner">
       <div class="search-wrap">
         <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="9" cy="9" r="6"/><path d="M15 15l3 3" stroke-linecap="round"/>
         </svg>
-        <input type="text" id="searchInput" placeholder="Search by name, post, or comment text…">
+        <input type="text" id="searchInput" placeholder="Search by name, post, or comment textâ€¦">
       </div>
     </div>
   </div>
 
-  <!-- ══════════ BODY ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• BODY â•â•â•â•â•â•â•â•â•â• -->
   <div class="cm-body">
 
     <!-- tabs (server-side filter, keeps URL state) -->
@@ -533,8 +536,8 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
           $name       = trim($row['name'] ?? 'Anonymous');
           $initial    = strtoupper(mb_substr($name, 0, 1)) ?: '?';
           $comment    = trim($row['comment'] ?? '');
-          $snippet    = mb_strlen($comment) > 200 ? mb_substr($comment, 0, 200) . '…' : $comment;
-          $dateStr    = !empty($row['created_at']) ? date('M d, Y · H:i', strtotime($row['created_at'])) : '';
+          $snippet    = mb_strlen($comment) > 200 ? mb_substr($comment, 0, 200) . 'â€¦' : $comment;
+          $dateStr    = !empty($row['created_at']) ? date('M d, Y Â· H:i', strtotime($row['created_at'])) : '';
           $isApproved = !empty($row['approved']);
           $statusKey  = $isApproved ? 'approved' : 'pending';
         ?>
@@ -552,7 +555,7 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
           <div class="row-body">
             <div class="row-badges">
               <span class="badge badge-<?php echo $statusKey; ?>">
-                <?php echo $isApproved ? '✓ Approved' : '⏳ Pending'; ?>
+                <?php echo $isApproved ? 'âœ“ Approved' : 'â³ Pending'; ?>
               </span>
             </div>
 
@@ -626,7 +629,7 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
 
     <?php else: ?>
       <div class="cm-empty">
-        <span>💬</span>
+        <span>ðŸ’¬</span>
         <h3>No comments found</h3>
         <p>Nothing here for the current filter. Try switching to a different tab.</p>
       </div>
@@ -661,7 +664,7 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
   const pageSize = 10;
   let currentPage = 1;
 
-  /* ── match ── */
+  /* â”€â”€ match â”€â”€ */
   const matches = (row, query) => {
     if (!query) return true;
     return (row.dataset.name    || '').includes(query)
@@ -669,7 +672,7 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
         || (row.dataset.comment || '').includes(query);
   };
 
-  /* ── render ── */
+  /* â”€â”€ render â”€â”€ */
   const render = () => {
     const query    = (searchInput?.value || '').trim().toLowerCase();
     const filtered = rows.filter(r => matches(r, query));
@@ -692,7 +695,7 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
     if (nextPage) nextPage.disabled = currentPage === pages;
   };
 
-  /* ── search ── */
+  /* â”€â”€ search â”€â”€ */
   if (searchInput) {
     let debounce;
     searchInput.addEventListener('input', () => {
@@ -701,11 +704,11 @@ if ($res) while ($row = $res->fetch_assoc()) $comments[] = $row;
     });
   }
 
-  /* ── pagination ── */
+  /* â”€â”€ pagination â”€â”€ */
   if (prevPage) prevPage.addEventListener('click', () => { currentPage = Math.max(1, currentPage - 1); render(); });
   if (nextPage) nextPage.addEventListener('click', () => { currentPage++; render(); });
 
-  /* ── delete modal ── */
+  /* â”€â”€ delete modal â”€â”€ */
   const modal        = document.getElementById('deleteModal');
   const modalMsg     = document.getElementById('modalMsg');
   const modalCancel  = document.getElementById('modalCancel');

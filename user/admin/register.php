@@ -1,9 +1,12 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 include('../shared/db_connect.php');
+require_once dirname(__DIR__) . '/shared/admin_auth.php';
 include('includes/admin_utils.php');
+ensure_admin_auth_schema($conn);
 
 $active_tab = 'login';
 $login_error = '';
@@ -15,8 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $active_tab = $action === 'request' ? 'request' : 'login';
 
     if ($action === 'login') {
+        unset($_SESSION['admin'], $_SESSION['admin_id'], $_SESSION['admin_role'], $_SESSION['admin_mfa_verified'], $_SESSION['admin_authenticated_at'], $_SESSION['admin_last_activity']);
         $identifier = trim($_POST['identifier'] ?? '');
-        $password   = md5($_POST['password'] ?? '');
+        $password = (string)($_POST['password'] ?? '');
+        $attemptKey = admin_login_attempt_key($identifier);
+
+        if (admin_login_is_throttled($conn, $attemptKey)) {
+            $login_error = 'Too many sign-in attempts. Please wait 15 minutes and try again.';
+        } else {
 
         $stmt = $conn->prepare("SELECT id, username, role, status, password FROM admins WHERE username = ? OR email = ? LIMIT 1");
         $stmt->bind_param("ss", $identifier, $identifier);
@@ -24,25 +33,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $admin = $stmt->get_result()->fetch_assoc();
         $stmt->close();
 
+        $upgradedHash = null;
+        $passwordValid = $admin && admin_password_verify($password, (string)($admin['password'] ?? ''), $upgradedHash);
         if (!$admin) {
+            admin_login_record_failure($conn, $attemptKey);
             log_admin_audit($conn, 'login_failed', null, null, 'Unknown account: ' . $identifier);
             $login_error = "Invalid username or password.";
-        } elseif (!hash_equals($admin['password'] ?? '', $password)) {
+        } elseif (!$passwordValid) {
+            admin_login_record_failure($conn, $attemptKey);
             log_admin_audit($conn, 'login_failed', (int)$admin['id'], null, 'Incorrect password');
             $login_error = "Invalid username or password.";
         } elseif (($admin['role'] ?? '') === 'super_admin') {
+            admin_login_record_failure($conn, $attemptKey);
             log_admin_audit($conn, 'login_redirected', (int)$admin['id'], null, 'Use super admin login portal');
             $login_error = "Super admin accounts must sign in via the super admin portal.";
-        } elseif (($admin['status'] ?? 'pending') === 'pending') {
+        } elseif (($admin['status'] ?? 'pending') !== 'approved') {
+            admin_login_record_failure($conn, $attemptKey);
             log_admin_audit($conn, 'login_pending', (int)$admin['id'], null, 'Awaiting approval');
-            $login_error = "Your account is awaiting approval by the super admin.";
-        } elseif (($admin['status'] ?? '') === 'deactivated') {
-            log_admin_audit($conn, 'login_deactivated', (int)$admin['id'], null, 'Account deactivated');
-            $login_error = "Your account has been deactivated. Please contact the super admin.";
+            $login_error = "This account is not active. Contact the super admin.";
         } else {
-            $_SESSION['admin'] = $admin['username'] ?? $identifier;
-            $_SESSION['admin_id'] = (int)($admin['id'] ?? 0);
-            $_SESSION['admin_role'] = $admin['role'] ?? 'admin';
+            if ($upgradedHash !== null) {
+                $upgrade = $conn->prepare('UPDATE admins SET password = ? WHERE id = ?');
+                $upgrade->bind_param('si', $upgradedHash, $admin['id']);
+                $upgrade->execute();
+                $upgrade->close();
+            }
+            admin_login_clear_failures($conn, $attemptKey);
+            admin_session_login($admin);
 
             $ip = admin_request_ip();
             $update = $conn->prepare("UPDATE admins SET last_login_at = NOW(), last_login_ip = ? WHERE id = ?");
@@ -54,10 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: dashboard.php');
             exit();
         }
+        }
     } elseif ($action === 'request') {
         $username = trim($_POST['username'] ?? '');
         $email    = trim($_POST['email'] ?? '');
-        $raw_pw   = trim($_POST['password'] ?? '');
+        $raw_pw   = (string)($_POST['password'] ?? '');
 
         if ($username === '' || $email === '' || $raw_pw === '') {
             $request_msg = 'Please fill out all fields.';
@@ -80,13 +98,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $approved_by = null;
                 $approved_at = null;
 
-                if (($_SESSION['admin_role'] ?? '') === 'super_admin') {
+                require_once dirname(__DIR__) . '/shared/admin_auth.php';
+                if (require_admin_access($conn, 'super_admin', false)) {
                     $status = 'approved';
                     $approved_by = (int)($_SESSION['admin_id'] ?? 0);
                     $approved_at = date('Y-m-d H:i:s');
                 }
 
-                $password = md5($raw_pw);
+                if (strlen($raw_pw) < 12) {
+                    $request_msg = 'Use a password with at least 12 characters.';
+                    $request_type = 'danger';
+                    $stmt = null;
+                } else {
+                $password = admin_password_hash($raw_pw);
                 $stmt = $conn->prepare("INSERT INTO admins (username, email, password, role, status, approved_by, approved_at) VALUES (?, ?, ?, 'admin', ?, ?, ?)");
                 $stmt->bind_param("ssssis", $username, $email, $password, $status, $approved_by, $approved_at);
 
@@ -106,6 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $request_type = 'danger';
                 }
                 $stmt->close();
+                }
             }
         }
     }
@@ -116,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin Access — Student Blog</title>
+  <title>Admin Access â€” Student Blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -554,4 +579,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </script>
 </body>
 </html>
+
 

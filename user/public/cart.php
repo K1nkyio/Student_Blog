@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -8,7 +9,7 @@ require_once '../shared/mpesa.php';
 
 mpesa_ensure_tables($conn);
 
-$page_title      = 'Cart — ' . SITE_NAME;
+$page_title      = 'Cart â€” ' . SITE_NAME;
 $meta_description = 'Your marketplace cart.';
 
 $message           = '';
@@ -75,7 +76,7 @@ if ($checkoutRequested) {
     if (empty($cart)) {
         $message = 'Your cart is empty.'; $messageType = 'error';
     } elseif ($hasUnpriced) {
-        $message = 'Some items are priced on request — remove them before paying online.'; $messageType = 'error';
+        $message = 'Some items are priced on request â€” remove them before paying online.'; $messageType = 'error';
     } elseif ($total <= 0) {
         $message = 'Total must be greater than 0 to pay via M-Pesa.'; $messageType = 'error';
     } else {
@@ -129,9 +130,9 @@ include '../shared/header.php';
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
-   DESIGN TOKENS — exact match opportunities.php
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DESIGN TOKENS â€” exact match opportunities.php
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -177,9 +178,9 @@ body {
 a { color: inherit; text-decoration: none; }
 button { font-family: inherit; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HERO STRIP
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cart-hero {
   background: var(--ink);
   color: #fff;
@@ -223,7 +224,7 @@ button { font-family: inherit; }
 }
 @keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 
-/* eyebrow — same live-dot pattern */
+/* eyebrow â€” same live-dot pattern */
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -287,16 +288,16 @@ button { font-family: inherit; }
   margin-top: .2rem;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BODY
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cart-body {
   max-width: var(--max-w);
   margin: 0 auto;
   padding: 2rem var(--gutter) 0;
 }
 
-/* ── alert banner ── */
+/* â”€â”€ alert banner â”€â”€ */
 .cart-alert {
   display: flex;
   align-items: flex-start;
@@ -313,9 +314,9 @@ button { font-family: inherit; }
 .cart-alert--success { background: var(--green-dim);  color: var(--green);  border: 1px solid rgba(26,122,74,.18); }
 .cart-alert--error   { background: var(--red-dim);    color: var(--red);    border: 1px solid rgba(176,48,48,.18); }
 
-/* ═══════════════════════════════════════════
-   MAIN LAYOUT — cart + summary
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   MAIN LAYOUT â€” cart + summary
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cart-layout {
   display: grid;
   grid-template-columns: 1fr 340px;
@@ -323,7 +324,7 @@ button { font-family: inherit; }
   align-items: start;
 }
 
-/* ── section heading ── */
+/* â”€â”€ section heading â”€â”€ */
 .cart-section-head {
   display: flex;
   align-items: center;
@@ -364,9 +365,9 @@ button { font-family: inherit; }
 .btn-clear:hover { background: var(--red-dim); border-color: rgba(176,48,48,.4); }
 .btn-clear svg { width: 11px; height: 11px; }
 
-/* ═══════════════════════════════════════════
-   CART ITEM ROWS — white cards like opp-row
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CART ITEM ROWS â€” white cards like opp-row
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .cart-list { display: flex; flex-direction: column; gap: .75rem; }
 
 .cart-row {
@@ -460,7 +461,7 @@ button { font-family: inherit; }
   border-radius: 2px;
 }
 
-/* quantity control — same as marketplace_item.php */
+/* quantity control â€” same as marketplace_item.php */
 .cart-qty {
   flex-shrink: 0;
 }
@@ -507,7 +508,7 @@ button { font-family: inherit; }
 .btn-remove:hover { border-color: rgba(176,48,48,.35); background: var(--red-dim); color: var(--red); }
 .btn-remove svg { width: 12px; height: 12px; }
 
-/* ── empty state ── */
+/* â”€â”€ empty state â”€â”€ */
 .cart-empty {
   text-align: center;
   padding: 4rem 2rem;
@@ -540,9 +541,9 @@ button { font-family: inherit; }
 .btn-browse:hover { background: #2c2a22; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(24,22,15,.2); color: #fff; }
 .btn-browse svg { width: 12px; height: 12px; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ORDER SUMMARY CARD (sticky)
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .summary-card {
   background: #fff;
   border: 1px solid var(--rule-light);
@@ -698,7 +699,7 @@ button { font-family: inherit; }
 }
 .phone-hint svg { width: 11px; height: 11px; flex-shrink: 0; margin-top: .15rem; }
 
-/* pay button — ink primary */
+/* pay button â€” ink primary */
 .btn-pay {
   width: 100%;
   display: flex;
@@ -769,9 +770,9 @@ button { font-family: inherit; }
 .btn-continue:hover { border-color: var(--ink-mid); background: var(--bg-warm); color: var(--ink); }
 .btn-continue svg { width: 11px; height: 11px; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 900px) {
   .cart-layout { grid-template-columns: 1fr; }
   .summary-card { position: static; }
@@ -791,7 +792,7 @@ button { font-family: inherit; }
 }
 </style>
 
-<!-- ══════ HERO ══════ -->
+<!-- â•â•â•â•â•â• HERO â•â•â•â•â•â• -->
 <div class="cart-hero">
   <div class="hero-inner">
     <div class="hero-eyebrow">
@@ -811,7 +812,7 @@ button { font-family: inherit; }
       </div>
       <div>
         <span class="hero-stat-num">
-          <?php echo $total > 0 ? 'KSh ' . number_format($total, 0) : '—'; ?>
+          <?php echo $total > 0 ? 'KSh ' . number_format($total, 0) : 'â€”'; ?>
         </span>
         <span class="hero-stat-label">Subtotal</span>
       </div>
@@ -819,7 +820,7 @@ button { font-family: inherit; }
   </div>
 </div>
 
-<!-- ══════ BODY ══════ -->
+<!-- â•â•â•â•â•â• BODY â•â•â•â•â•â• -->
 <div class="cart-body">
 
   <!-- alert -->
@@ -837,9 +838,9 @@ button { font-family: inherit; }
   <?php endif; ?>
 
   <?php if (empty($cart)): ?>
-    <!-- ── Empty state ── -->
+    <!-- â”€â”€ Empty state â”€â”€ -->
     <div class="cart-empty">
-      <span class="cart-empty-icon">🛒</span>
+      <span class="cart-empty-icon">ðŸ›’</span>
       <h3>Your cart is empty</h3>
       <p>Browse the marketplace and add items to get started.</p>
       <a class="btn-browse" href="marketplace.php">
@@ -853,7 +854,7 @@ button { font-family: inherit; }
   <?php else: ?>
     <div class="cart-layout">
 
-      <!-- ── Left: cart items ── -->
+      <!-- â”€â”€ Left: cart items â”€â”€ -->
       <div>
         <div class="cart-section-head">
           <div>
@@ -861,7 +862,7 @@ button { font-family: inherit; }
               Cart Items
             </div>
             <div class="cart-section-meta">
-              <?php echo count($cart); ?> item<?php echo count($cart) !== 1 ? 's' : ''; ?> · <?php echo $cartCount; ?> total qty
+              <?php echo count($cart); ?> item<?php echo count($cart) !== 1 ? 's' : ''; ?> Â· <?php echo $cartCount; ?> total qty
             </div>
           </div>
           <form method="POST" style="margin:0">
@@ -942,7 +943,7 @@ button { font-family: inherit; }
                   <button class="qty-btn"
                           type="button"
                           data-form="qtyForm_<?php echo (int)$id; ?>"
-                          data-dir="-1">−</button>
+                          data-dir="-1">âˆ’</button>
                   <span class="qty-sep"></span>
                   <input class="qty-input"
                          type="number"
@@ -985,7 +986,7 @@ button { font-family: inherit; }
         </div>
       </div>
 
-      <!-- ── Right: order summary ── -->
+      <!-- â”€â”€ Right: order summary â”€â”€ -->
       <div>
         <div class="summary-card">
           <div class="summary-head">
@@ -1011,7 +1012,7 @@ button { font-family: inherit; }
                 <span class="summary-line-name" title="<?php echo htmlspecialchars($it['title']); ?>">
                   <?php echo htmlspecialchars($it['title']); ?>
                 </span>
-                <span class="summary-line-qty">×<?php echo (int)$qty; ?></span>
+                <span class="summary-line-qty">Ã—<?php echo (int)$qty; ?></span>
                 <?php if ($lp): ?>
                   <span class="summary-line-price"><?php echo $lp; ?></span>
                 <?php else: ?>
@@ -1066,7 +1067,7 @@ button { font-family: inherit; }
                 <svg fill="currentColor" viewBox="0 0 24 24" width="10" height="10"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
                 Powered by M-Pesa
               </span>
-              <span>Secure · Instant</span>
+              <span>Secure Â· Instant</span>
             </div>
 
             <a class="btn-continue" href="marketplace.php">
@@ -1086,7 +1087,7 @@ button { font-family: inherit; }
 
 <script>
 (function () {
-  /* ── Quantity +/- buttons ── */
+  /* â”€â”€ Quantity +/- buttons â”€â”€ */
   document.querySelectorAll('.qty-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const formId = btn.dataset.form;
@@ -1102,7 +1103,7 @@ button { font-family: inherit; }
     });
   });
 
-  /* ── Auto-submit qty on manual input change ── */
+  /* â”€â”€ Auto-submit qty on manual input change â”€â”€ */
   document.querySelectorAll('.qty-input').forEach(input => {
     input.addEventListener('change', () => {
       const formId = input.dataset.form;
@@ -1111,12 +1112,12 @@ button { font-family: inherit; }
     });
   });
 
-  /* ── Pay button loading state ── */
+  /* â”€â”€ Pay button loading state â”€â”€ */
   document.getElementById('checkoutForm')?.addEventListener('submit', function () {
     const btn = document.getElementById('payBtn');
     if (btn && !btn.disabled) {
       btn.disabled = true;
-      btn.innerHTML = '<svg style="animation:spin .7s linear infinite" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/></svg> Processing…';
+      btn.innerHTML = '<svg style="animation:spin .7s linear infinite" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/></svg> Processingâ€¦';
     }
   });
 

@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 if (!defined('BLOG_SYSTEM')) {
     define('BLOG_SYSTEM', true);
@@ -65,7 +66,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ── NAV SHELL ── */
+        /* â”€â”€ NAV SHELL â”€â”€ */
         .main-nav {
             position: sticky;
             top: 0;
@@ -88,7 +89,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
             gap: 2rem;
         }
 
-        /* ── BRAND ── */
+        /* â”€â”€ BRAND â”€â”€ */
         .nav-brand {
             display: flex;
             align-items: center;
@@ -129,7 +130,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
             color: var(--accent);
         }
 
-        /* ── CENTRE LINKS ── */
+        /* â”€â”€ CENTRE LINKS â”€â”€ */
         .nav-links {
             display: flex;
             align-items: center;
@@ -187,7 +188,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
             color: #fff;
         }
 
-        /* ── ACTIONS ── */
+        /* â”€â”€ ACTIONS â”€â”€ */
         .nav-actions {
             display: flex;
             align-items: center;
@@ -245,7 +246,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
             margin: 0 0.25rem;
         }
 
-        /* ── AUTH BUTTONS ── */
+        /* â”€â”€ AUTH BUTTONS â”€â”€ */
         .btn-nav {
             display: inline-flex;
             align-items: center;
@@ -285,7 +286,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
             transform: translateY(-1px);
         }
 
-        /* ── USER PILL ── */
+        /* â”€â”€ USER PILL â”€â”€ */
         .nav-user-pill {
             display: flex;
             align-items: center;
@@ -340,7 +341,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
 
         .dropdown.open .nav-caret { transform: rotate(180deg); }
 
-        /* ── DROPDOWN ── */
+        /* â”€â”€ DROPDOWN â”€â”€ */
         .dropdown { position: relative; }
 
         .dropdown-menu {
@@ -413,7 +414,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
             margin: 0.35rem 0;
         }
 
-        /* ── NOTIFICATIONS PANEL ── */
+        /* â”€â”€ NOTIFICATIONS PANEL â”€â”€ */
         .notif-panel {
             min-width: 340px;
             max-width: 380px;
@@ -540,7 +541,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
 
         .notif-view-all:hover { color: var(--accent); }
 
-        /* ── MOBILE TOGGLE ── */
+        /* â”€â”€ MOBILE TOGGLE â”€â”€ */
         .nav-toggle {
             display: none;
             width: 38px;
@@ -558,7 +559,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
 
         .nav-toggle:hover { background: var(--surface-hover); color: var(--ink); }
 
-        /* ── RESPONSIVE ── */
+        /* â”€â”€ RESPONSIVE â”€â”€ */
         @media (max-width: 900px) {
             .nav-container { grid-template-columns: auto auto; }
             .nav-toggle { display: flex; }
@@ -598,7 +599,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
             .notif-panel { min-width: 290px; max-width: 320px; }
         }
 
-        /* ── GLOBAL RESPONSIVE HELPERS ── */
+        /* â”€â”€ GLOBAL RESPONSIVE HELPERS â”€â”€ */
         img, video, canvas { max-width: 100%; height: auto; }
         table { width: 100%; }
         .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -734,7 +735,7 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
                                     <i class="<?= $ic ?>"></i>
                                 </div>
                                 <div class="notif-body">
-                                    <div class="notif-msg"><?= htmlspecialchars(substr($n['message'], 0, 90)) . (strlen($n['message']) > 90 ? '…' : '') ?></div>
+                                    <div class="notif-msg"><?= htmlspecialchars(substr($n['message'], 0, 90)) . (strlen($n['message']) > 90 ? 'â€¦' : '') ?></div>
                                     <div class="notif-time"><?= time_ago($n['created_at']) ?></div>
                                 </div>
                                 <?php if ($unread): ?><div class="notif-unread-pip"></div><?php endif; ?>
@@ -885,3 +886,4 @@ if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])) {
     });
 })();
 </script>
+

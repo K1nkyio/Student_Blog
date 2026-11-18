@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -79,15 +80,15 @@ if (isset($_POST['mark_all_read']) && validate_csrf_token($_POST['csrf_token'] ?
 // Get notification icon based on type
 function get_notification_icon($type) {
     $icons = [
-        'comment'  => '💬',
-        'like'     => '❤️',
-        'follow'   => '👤',
+        'comment'  => 'ðŸ’¬',
+        'like'     => 'â¤ï¸',
+        'follow'   => 'ðŸ‘¤',
         'mention'  => '@',
-        'post'     => '📰',
-        'system'   => 'ℹ️',
-        'bookmark' => '🔖',
+        'post'     => 'ðŸ“°',
+        'system'   => 'â„¹ï¸',
+        'bookmark' => 'ðŸ”–',
     ];
-    return $icons[$type] ?? '🔔';
+    return $icons[$type] ?? 'ðŸ””';
 }
 
 // Get notification color key based on type
@@ -113,9 +114,9 @@ include '../shared/header.php';
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DESIGN TOKENS  (mirrors opportunities.php)
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -154,7 +155,7 @@ include '../shared/header.php';
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ─── Page shell ─── */
+/* â”€â”€â”€ Page shell â”€â”€â”€ */
 .notif-page {
   font-family: var(--font-sans);
   background: var(--bg);
@@ -163,9 +164,9 @@ include '../shared/header.php';
   padding-bottom: 6rem;
 }
 
-/* ═══════════════════════════════════════════
-   HERO — full-width dark strip
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HERO â€” full-width dark strip
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .notif-hero {
   background: var(--ink);
   color: #fff;
@@ -285,9 +286,9 @@ include '../shared/header.php';
   margin-top: .25rem;
 }
 
-/* ═══════════════════════════════════════════
-   TOOLBAR — filter tabs + action
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   TOOLBAR â€” filter tabs + action
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .notif-toolbar {
   border-bottom: 1px solid var(--rule);
   background: var(--bg);
@@ -356,9 +357,9 @@ include '../shared/header.php';
   padding: .5rem 0;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BODY
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .notif-body {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -388,9 +389,9 @@ include '../shared/header.php';
 .flash-msg.success { background: var(--green-dim); color: var(--green); border-color: var(--green); }
 .flash-msg.error   { background: var(--red-dim);   color: var(--red);   border-color: var(--red);   }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    NOTIFICATION ROWS
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .notif-list {
   display: flex;
   flex-direction: column;
@@ -423,7 +424,7 @@ include '../shared/header.php';
   to   { opacity: 1; transform: translateX(0); }
 }
 
-/* unread indicator — left accent line */
+/* unread indicator â€” left accent line */
 .notif-row::before {
   content: '';
   position: absolute;
@@ -588,9 +589,9 @@ include '../shared/header.php';
 .btn-icon:hover { border-color: var(--ink-mid); color: var(--ink); background: var(--bg-warm); }
 .btn-icon svg { width: 13px; height: 13px; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    EMPTY STATE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .notif-empty {
   text-align: center;
   padding: 5rem 1rem;
@@ -602,9 +603,9 @@ include '../shared/header.php';
 .notif-empty p  { font-size: .875rem; }
 .notif-empty .btn { margin-top: 1.25rem; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PAGINATION
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .notif-pagination {
   display: flex;
   align-items: center;
@@ -647,9 +648,9 @@ include '../shared/header.php';
   text-align: center;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 640px) {
   .notif-row {
     grid-template-columns: 40px 1fr;
@@ -680,12 +681,12 @@ $stats = [
 
 <div class="notif-page">
 
-  <!-- ══════════ HERO ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• HERO â•â•â•â•â•â•â•â•â•â• -->
   <div class="notif-hero">
     <div class="hero-inner">
       <span class="hero-eyebrow"><span class="live-dot"></span> Your activity</span>
       <h1 class="hero-headline">Stay in the<br><em>Loop</em></h1>
-      <p class="hero-sub">Comments, likes, follows, and mentions — everything that matters to your account, in one place.</p>
+      <p class="hero-sub">Comments, likes, follows, and mentions â€” everything that matters to your account, in one place.</p>
       <div class="hero-stats">
         <div class="hero-stat">
           <span class="hero-stat-num"><?= $stats['total'] ?></span>
@@ -703,7 +704,7 @@ $stats = [
     </div>
   </div>
 
-  <!-- ══════════ STICKY TOOLBAR ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• STICKY TOOLBAR â•â•â•â•â•â•â•â•â•â• -->
   <div class="notif-toolbar">
     <div class="notif-toolbar-inner">
       <nav class="notif-tabs" aria-label="Notification filters">
@@ -735,7 +736,7 @@ $stats = [
     </div>
   </div>
 
-  <!-- ══════════ BODY ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• BODY â•â•â•â•â•â•â•â•â•â• -->
   <div class="notif-body">
 
     <?php display_flash(); ?>
@@ -845,7 +846,7 @@ $stats = [
         $end_page   = min($total_pages, $current_page + 2);
         if ($start_page > 1): ?>
           <a href="?filter=<?= $filter ?>&page=1" class="page-btn">1</a>
-          <?php if ($start_page > 2): ?><span class="page-info" style="min-width:2rem;padding:.4rem .6rem">…</span><?php endif; ?>
+          <?php if ($start_page > 2): ?><span class="page-info" style="min-width:2rem;padding:.4rem .6rem">â€¦</span><?php endif; ?>
         <?php endif; ?>
 
         <?php for ($i = $start_page; $i <= $end_page; $i++): ?>
@@ -855,7 +856,7 @@ $stats = [
         <?php endfor; ?>
 
         <?php if ($end_page < $total_pages):
-          if ($end_page < $total_pages - 1): ?><span class="page-info" style="min-width:2rem;padding:.4rem .6rem">…</span><?php endif; ?>
+          if ($end_page < $total_pages - 1): ?><span class="page-info" style="min-width:2rem;padding:.4rem .6rem">â€¦</span><?php endif; ?>
           <a href="?filter=<?= $filter ?>&page=<?= $total_pages ?>" class="page-btn"><?= $total_pages ?></a>
         <?php endif; ?>
 
@@ -871,13 +872,13 @@ $stats = [
     <?php else: ?>
       <!-- Empty State -->
       <div class="notif-empty">
-        <span class="notif-empty-icon">🔔</span>
+        <span class="notif-empty-icon">ðŸ””</span>
         <h3>
           <?php if ($filter === 'unread'): ?>All caught up<?php elseif ($filter === 'read'): ?>Nothing read yet<?php else: ?>No notifications yet<?php endif; ?>
         </h3>
         <p>
           <?php if ($filter === 'unread'): ?>
-            You've read all your notifications — great work staying on top of things.
+            You've read all your notifications â€” great work staying on top of things.
           <?php elseif ($filter === 'read'): ?>
             You haven't marked any notifications as read yet.
           <?php else: ?>
@@ -897,7 +898,7 @@ $stats = [
 </div><!-- /.notif-page -->
 
 <script>
-// ── Mark as read ──
+// â”€â”€ Mark as read â”€â”€
 function markAsRead(notificationId) {
   const row = document.querySelector(`[data-notification-id="${notificationId}"]`);
   if (!row) return;
@@ -933,7 +934,7 @@ function markAsRead(notificationId) {
   });
 }
 
-// ── Dismiss ──
+// â”€â”€ Dismiss â”€â”€
 function dismissNotification(notificationId) {
   const row = document.querySelector(`[data-notification-id="${notificationId}"]`);
   if (!row) return;
@@ -943,7 +944,7 @@ function dismissNotification(notificationId) {
   setTimeout(() => row.remove(), 260);
 }
 
-// ── Toast ──
+// â”€â”€ Toast â”€â”€
 function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   const bg = type === 'success' ? 'var(--green)' : type === 'error' ? 'var(--red)' : 'var(--sky)';
@@ -964,7 +965,7 @@ function showToast(message, type = 'info') {
   }, 3000);
 }
 
-// ── Auto-mark on scroll (debounced) ──
+// â”€â”€ Auto-mark on scroll (debounced) â”€â”€
 let markTimeout;
 window.addEventListener('scroll', function () {
   clearTimeout(markTimeout);

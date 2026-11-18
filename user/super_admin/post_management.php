@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 
 if (empty($_SESSION['admin'])) {
@@ -181,7 +182,7 @@ $active_tab = 'posts';
                   $statusLabel = 'Rejected';
               } else {
                   $statusClass = $post['visible'] ? 'visible' : 'hidden';
-                  $statusLabel = $post['visible'] ? 'Approved · Live' : 'Approved · Hidden';
+                  $statusLabel = $post['visible'] ? 'Approved Â· Live' : 'Approved Â· Hidden';
               }
             ?>
             <tr>
@@ -230,4 +231,5 @@ $active_tab = 'posts';
 </div>
 
 <?php include '../admin/includes/footer.php'; ?>
+
 

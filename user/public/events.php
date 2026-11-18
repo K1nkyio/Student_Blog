@@ -1,5 +1,6 @@
-﻿<?php
-session_start();
+<?php
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -979,3 +980,4 @@ include '../shared/header.php';
 </script>
 
 <?php include '../shared/footer.php'; ?>
+

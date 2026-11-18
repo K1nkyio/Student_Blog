@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 require_once __DIR__ . '/db_connect.php';
 require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/rate_limiter.php';
@@ -54,3 +55,4 @@ if ($existing) {
     
     echo json_encode(['success' => true, 'message' => 'Thanks! Check your email to confirm.']);
 }
+

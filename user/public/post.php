@@ -1,11 +1,12 @@
 <?php
 // ============================================================
-// PHP LOGIC — unchanged from original
+// PHP LOGIC â€” unchanged from original
 // ============================================================
 include '../shared/db_connect.php';
 
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 require_once '../shared/functions.php';
 require_once '../shared/csrf.php';
@@ -94,7 +95,7 @@ include '../shared/header.php';
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-/* ─── TOKENS ────────────────────────────────────────────── */
+/* â”€â”€â”€ TOKENS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :root {
     --ink:        #18110c;
     --ink-soft:   #3d3028;
@@ -133,9 +134,9 @@ img { display: block; max-width: 100%; }
 button { font-family: inherit; cursor: pointer; }
 
 
-/* ══════════════════════════════════════════════════════════
-   HERO — full-bleed image, no card, no border
-══════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HERO â€” full-bleed image, no card, no border
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .hero {
     position: relative;
     width: 100%;
@@ -175,9 +176,9 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 
-/* ══════════════════════════════════════════════════════════
-   ARTICLE — open, no box
-══════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   ARTICLE â€” open, no box
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .article-wrap {
     max-width: var(--col-text);
     margin: 0 auto;
@@ -296,7 +297,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 
-/* ── ACTION BAR — inline, minimal ──────────────────────── */
+/* â”€â”€ ACTION BAR â€” inline, minimal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .action-bar {
     display: flex;
     align-items: center;
@@ -365,9 +366,9 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 
-/* ══════════════════════════════════════════════════════════
-   COMMENTS — open section, no card
-══════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   COMMENTS â€” open section, no card
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .comments-section {
     max-width: var(--col-text);
     margin: 4.5rem auto 0;
@@ -403,7 +404,7 @@ button { font-family: inherit; cursor: pointer; }
     top: -2px;
 }
 
-/* Comment form — minimal, open */
+/* Comment form â€” minimal, open */
 .comment-form {
     margin-bottom: 3rem;
 }
@@ -551,9 +552,9 @@ textarea.field {
 .no-comments span { display: block; font-size: 2rem; margin-bottom: .6rem; }
 
 
-/* ══════════════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RELATED POSTS
-══════════════════════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .related-section {
     max-width: var(--col-wide);
     margin: 5.5rem auto 0;
@@ -680,7 +681,7 @@ textarea.field {
     font-style: italic;
 }
 
-/* ── ALERTS ──────────────────────────────────────────────── */
+/* â”€â”€ ALERTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .alert {
     padding: .75rem 1rem;
     border-radius: 3px;
@@ -696,7 +697,7 @@ textarea.field {
 .alert-error   { background: #fde8e8; color: #b91c1c; border-left: 3px solid #e55a5a; }
 .alert-info    { background: #dbeafe; color: #1e40af; border-left: 3px solid #3b82f6; }
 
-/* ── ANIMATIONS ──────────────────────────────────────────── */
+/* â”€â”€ ANIMATIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes riseIn {
     from { opacity: 0; transform: translateY(18px); }
@@ -707,7 +708,7 @@ textarea.field {
     to   { opacity: 1; transform: translateX(0); }
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────── */
+/* â”€â”€ RESPONSIVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (max-width: 640px) {
     .article-wrap,
     .comments-section { padding: 0 var(--gutter); }
@@ -725,7 +726,7 @@ textarea.field {
 <body>
 
 <?php if ($post['image']): ?>
-<!-- ── HERO ─────────────────────────────────────────────── -->
+<!-- â”€â”€ HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div class="hero">
     <img class="hero-img"
          src="<?php echo htmlspecialchars(get_post_image_url($post['image'])); ?>"
@@ -734,7 +735,7 @@ textarea.field {
 <?php endif; ?>
 
 
-<!-- ── ARTICLE ───────────────────────────────────────────── -->
+<!-- â”€â”€ ARTICLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div class="article-wrap">
     <?php display_flash(); ?>
 
@@ -776,7 +777,7 @@ textarea.field {
         <button type="button"
                 class="btn-like <?php echo $userLiked ? 'liked' : ''; ?>"
                 data-post-id="<?php echo $post_id; ?>">
-            <span class="heart-icon"><?php echo $userLiked ? '❤️' : '🤍'; ?></span>
+            <span class="heart-icon"><?php echo $userLiked ? 'â¤ï¸' : 'ðŸ¤'; ?></span>
             <span class="like-count"><?php echo $likes; ?> <?php echo $likes === 1 ? 'Like' : 'Likes'; ?></span>
         </button>
 
@@ -792,7 +793,7 @@ textarea.field {
 </div>
 
 
-<!-- ── COMMENTS ──────────────────────────────────────────── -->
+<!-- â”€â”€ COMMENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div class="comments-section">
     <h2 class="section-heading">
         Comments
@@ -821,7 +822,7 @@ textarea.field {
         <div class="fg">
             <label for="comment_text">Comment</label>
             <textarea id="comment_text" name="comment_text" class="field"
-                      placeholder="Share your thoughts…" required><?php echo htmlspecialchars($_POST['comment_text'] ?? '', ENT_QUOTES); ?></textarea>
+                      placeholder="Share your thoughtsâ€¦" required><?php echo htmlspecialchars($_POST['comment_text'] ?? '', ENT_QUOTES); ?></textarea>
         </div>
 
         <button type="submit" name="comment" class="btn-submit" id="submitBtn">
@@ -849,15 +850,15 @@ textarea.field {
             <?php endwhile; ?>
         <?php else: ?>
             <div class="no-comments">
-                <span>💬</span>
-                No comments yet — be the first to share your thoughts!
+                <span>ðŸ’¬</span>
+                No comments yet â€” be the first to share your thoughts!
             </div>
         <?php endif; ?>
     </div>
 </div>
 
 
-<!-- ── RELATED POSTS ─────────────────────────────────────── -->
+<!-- â”€â”€ RELATED POSTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div class="related-section">
     <div class="related-header">
         <h2>More to Read</h2>
@@ -874,7 +875,7 @@ textarea.field {
                          src="<?php echo htmlspecialchars(get_post_image_url($rPost['image'])); ?>"
                          alt="<?php echo htmlspecialchars($rPost['title']); ?>">
                 <?php else: ?>
-                    <div class="card-img-placeholder">📝</div>
+                    <div class="card-img-placeholder">ðŸ“</div>
                 <?php endif; ?>
             </div>
 
@@ -883,7 +884,7 @@ textarea.field {
                 <p class="post-grid-excerpt">
                     <?php
                         $excerpt = strip_tags($rPost['content']);
-                        echo htmlspecialchars(substr($excerpt, 0, 130)) . (strlen($excerpt) > 130 ? '…' : '');
+                        echo htmlspecialchars(substr($excerpt, 0, 130)) . (strlen($excerpt) > 130 ? 'â€¦' : '');
                     ?>
                 </p>
                 <div class="post-grid-footer">
@@ -919,7 +920,7 @@ textarea.field {
                 if (!data.success) throw new Error(data.message || 'Like failed');
                 likeBtn.classList.toggle('liked', data.liked);
                 const heart = likeBtn.querySelector('.heart-icon');
-                if (heart) heart.textContent = data.liked ? '❤️' : '🤍';
+                if (heart) heart.textContent = data.liked ? 'â¤ï¸' : 'ðŸ¤';
                 const count = likeBtn.querySelector('.like-count');
                 if (count) {
                     count.textContent = `${data.likes} ${data.likes === 1 ? 'Like' : 'Likes'}`;
@@ -1038,3 +1039,4 @@ $relatedQuery->close();
 $conn->close();
 include '../shared/footer.php';
 ?>
+

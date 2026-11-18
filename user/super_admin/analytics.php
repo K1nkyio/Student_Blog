@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 
 if (empty($_SESSION['admin'])) {
@@ -93,7 +94,7 @@ function get_monthly_counts(mysqli $conn, string $table, string $dateColumn, int
     return [$labels, array_values($counts)];
 }
 
-// ── Metrics ──────────────────────────────────────────
+// â”€â”€ Metrics â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 $posts_total   = safe_count($conn, 'posts');
 $posts_visible = column_exists($conn, 'posts', 'visible')
     ? safe_count($conn, 'posts', 'COALESCE(visible,1)=1') : $posts_total;
@@ -127,7 +128,7 @@ $safe_30d        = safe_recent($conn, 'anonymous_reports', 'created_at');
 $approval_rate = $comments_total > 0 ? round(($comments_approved / $comments_total) * 100) : 0;
 $visible_rate  = $posts_total    > 0 ? round(($posts_visible    / $posts_total)    * 100) : 0;
 
-// ── Top Posts ──
+// â”€â”€ Top Posts â”€â”€
 $top_share_expr = column_exists($conn, 'posts', 'share_count')
     ? 'COALESCE(p.share_count,0)'
     : (table_exists($conn, 'post_shares') ? '(SELECT COUNT(*) FROM post_shares ps WHERE ps.post_id=p.id)' : '0');
@@ -146,7 +147,7 @@ if (table_exists($conn, 'posts')) {
     if ($res) while ($row = $res->fetch_assoc()) $top_posts[] = $row;
 }
 
-// ── Top Events ──
+// â”€â”€ Top Events â”€â”€
 $top_events = [];
 if (table_exists($conn, 'events')) {
     $ev = column_exists($conn,'events','view_count')    ? 'COALESCE(e.view_count,0)'    : '0';
@@ -168,9 +169,9 @@ if (table_exists($conn, 'events')) {
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
-   DESIGN TOKENS — mirrors opportunities.php
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DESIGN TOKENS â€” mirrors opportunities.php
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -206,7 +207,7 @@ if (table_exists($conn, 'events')) {
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ─── page shell ─── */
+/* â”€â”€â”€ page shell â”€â”€â”€ */
 .an-page {
   font-family: var(--font-sans);
   background: var(--bg);
@@ -215,9 +216,9 @@ if (table_exists($conn, 'events')) {
   padding-bottom: 6rem;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HERO
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .an-hero {
   background: var(--ink);
   color: #fff;
@@ -309,16 +310,16 @@ if (table_exists($conn, 'events')) {
   text-transform: uppercase; color: rgba(255,255,255,.35); display: block; margin-top: .25rem;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BODY
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .an-body {
   max-width: var(--max-w);
   margin: 0 auto;
   padding: 2.25rem var(--gutter) 0;
 }
 
-/* ── Section label ── */
+/* â”€â”€ Section label â”€â”€ */
 .section-label {
   display: flex;
   align-items: center;
@@ -340,7 +341,7 @@ if (table_exists($conn, 'events')) {
   white-space: nowrap;
 }
 
-/* ── Stat cards grid ── */
+/* â”€â”€ Stat cards grid â”€â”€ */
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -406,7 +407,7 @@ if (table_exists($conn, 'events')) {
 .stat-meta { font-size: .78rem; color: var(--ink-light); }
 .stat-meta strong { color: var(--ink-mid); font-weight: 600; }
 
-/* ── Section card (chart / table container) ── */
+/* â”€â”€ Section card (chart / table container) â”€â”€ */
 .an-section {
   background: #fff;
   border: 1px solid var(--rule-light);
@@ -432,7 +433,7 @@ if (table_exists($conn, 'events')) {
 }
 .an-section-body { padding: 1.4rem; }
 
-/* ── Info grid inside sections ── */
+/* â”€â”€ Info grid inside sections â”€â”€ */
 .info-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -456,7 +457,7 @@ if (table_exists($conn, 'events')) {
 }
 .info-item-label { font-size: .78rem; color: var(--ink-light); }
 
-/* ── Bar chart ── */
+/* â”€â”€ Bar chart â”€â”€ */
 .chart-wrap {
   background: var(--bg);
   border: 1px solid var(--rule-light);
@@ -490,7 +491,7 @@ if (table_exists($conn, 'events')) {
 .bar-val   { font-size: .7rem; color: var(--ink-mid); font-weight: 600; }
 .bar-label { font-size: .6rem; color: var(--ink-light); text-align: center; line-height: 1.3; }
 
-/* ── SVG line chart ── */
+/* â”€â”€ SVG line chart â”€â”€ */
 .line-wrap {
   background: var(--bg);
   border: 1px solid var(--rule-light);
@@ -507,7 +508,7 @@ if (table_exists($conn, 'events')) {
   padding: 0 .2rem;
 }
 
-/* ── Progress bars ── */
+/* â”€â”€ Progress bars â”€â”€ */
 .progress-row { margin-bottom: 1.1rem; }
 .progress-label {
   display: flex;
@@ -534,7 +535,7 @@ if (table_exists($conn, 'events')) {
 .progress-bar.amber  { background: var(--amber); }
 .progress-bar.accent { background: var(--accent); }
 
-/* ── Table ── */
+/* â”€â”€ Table â”€â”€ */
 .an-table {
   width: 100%;
   border-collapse: collapse;
@@ -573,7 +574,7 @@ if (table_exists($conn, 'events')) {
 .chip-comments{ background: var(--amber-dim);  color: var(--amber); }
 .chip-shares  { background: var(--green-dim);  color: var(--green); }
 
-/* ── Two-col layout for some sections ── */
+/* â”€â”€ Two-col layout for some sections â”€â”€ */
 .two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -581,7 +582,7 @@ if (table_exists($conn, 'events')) {
 }
 @media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } }
 
-/* ── Empty state ── */
+/* â”€â”€ Empty state â”€â”€ */
 .an-empty {
   text-align: center;
   padding: 3rem 1rem;
@@ -593,12 +594,12 @@ if (table_exists($conn, 'events')) {
 
 <div class="an-page">
 
-  <!-- ══════════ HERO ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• HERO â•â•â•â•â•â•â•â•â•â• -->
   <div class="an-hero">
     <div class="hero-inner">
       <span class="hero-eyebrow"><span class="live-dot"></span> Super Admin</span>
       <h1 class="hero-headline">Platform<br><em>Analytics</em></h1>
-      <p class="hero-sub">Live performance metrics, engagement trends, and content health — all in one place.</p>
+      <p class="hero-sub">Live performance metrics, engagement trends, and content health â€” all in one place.</p>
       <div class="hero-stats">
         <div class="hero-stat">
           <span class="hero-stat-num"><?php echo number_format($users_total); ?></span>
@@ -622,19 +623,19 @@ if (table_exists($conn, 'events')) {
 
   <div class="an-body">
 
-    <!-- ═══ PRIMARY STATS ═══ -->
+    <!-- â•â•â• PRIMARY STATS â•â•â• -->
     <div class="section-label"><span class="section-label-text">Core Metrics</span></div>
     <div class="stat-grid">
       <?php
       $cards = [
-        ['sky',    '👥', 'Total Users',    $users_total,     $users_30d,     'new users in 30 days'],
-        ['green',  '📝', 'Total Posts',    $posts_total,     $posts_30d,     'posts in 30 days'],
-        ['accent', '👁', 'Total Views',    $views_total,     null,           'all-time post views'],
-        ['amber',  '❤️', 'Total Likes',    $likes_total,     $likes_30d,     'likes in 30 days'],
-        ['purple', '💬', 'Total Comments', $comments_total,  $comments_30d,  'comments in 30 days'],
-        ['sky',    '🔖', 'Bookmarks',      $bookmarks_total, $bookmarks_30d, 'saved in 30 days'],
-        ['green',  '🗓', 'Events',         $events_total,    $events_30d,    'new in 30 days'],
-        ['accent', '🎓', 'Opportunities',  $opps_total,      $opps_30d,      'new in 30 days'],
+        ['sky',    'ðŸ‘¥', 'Total Users',    $users_total,     $users_30d,     'new users in 30 days'],
+        ['green',  'ðŸ“', 'Total Posts',    $posts_total,     $posts_30d,     'posts in 30 days'],
+        ['accent', 'ðŸ‘', 'Total Views',    $views_total,     null,           'all-time post views'],
+        ['amber',  'â¤ï¸', 'Total Likes',    $likes_total,     $likes_30d,     'likes in 30 days'],
+        ['purple', 'ðŸ’¬', 'Total Comments', $comments_total,  $comments_30d,  'comments in 30 days'],
+        ['sky',    'ðŸ”–', 'Bookmarks',      $bookmarks_total, $bookmarks_30d, 'saved in 30 days'],
+        ['green',  'ðŸ—“', 'Events',         $events_total,    $events_30d,    'new in 30 days'],
+        ['accent', 'ðŸŽ“', 'Opportunities',  $opps_total,      $opps_30d,      'new in 30 days'],
       ];
       foreach ($cards as $i => [$color, $icon, $label, $value, $recent, $meta]):
       ?>
@@ -653,11 +654,11 @@ if (table_exists($conn, 'events')) {
       <?php endforeach; ?>
     </div>
 
-    <!-- ═══ USER GROWTH ═══ -->
+    <!-- â•â•â• USER GROWTH â•â•â• -->
     <div class="section-label" style="margin-top:2.5rem"><span class="section-label-text">User Activity</span></div>
     <div class="an-section">
       <div class="an-section-head">
-        <span class="an-section-head-icon">👥</span>
+        <span class="an-section-head-icon">ðŸ‘¥</span>
         <span class="an-section-title">New Users by Month</span>
       </div>
       <div class="an-section-body">
@@ -693,11 +694,11 @@ if (table_exists($conn, 'events')) {
       </div>
     </div>
 
-    <!-- ═══ POST TRENDS ═══ -->
+    <!-- â•â•â• POST TRENDS â•â•â• -->
     <div class="section-label"><span class="section-label-text">Post Trends</span></div>
     <div class="an-section">
       <div class="an-section-head">
-        <span class="an-section-head-icon">📝</span>
+        <span class="an-section-head-icon">ðŸ“</span>
         <span class="an-section-title">Posts Published by Month</span>
       </div>
       <div class="an-section-body">
@@ -756,11 +757,11 @@ if (table_exists($conn, 'events')) {
       </div>
     </div>
 
-    <!-- ═══ ENGAGEMENT (30 DAYS) ═══ -->
-    <div class="section-label"><span class="section-label-text">Engagement — Last 30 Days</span></div>
+    <!-- â•â•â• ENGAGEMENT (30 DAYS) â•â•â• -->
+    <div class="section-label"><span class="section-label-text">Engagement â€” Last 30 Days</span></div>
     <div class="an-section">
       <div class="an-section-head">
-        <span class="an-section-head-icon">⚡</span>
+        <span class="an-section-head-icon">âš¡</span>
         <span class="an-section-title">Recent Activity</span>
       </div>
       <div class="an-section-body">
@@ -804,13 +805,13 @@ if (table_exists($conn, 'events')) {
       </div>
     </div>
 
-    <!-- ═══ CONTENT HEALTH ═══ -->
+    <!-- â•â•â• CONTENT HEALTH â•â•â• -->
     <div class="section-label"><span class="section-label-text">Content Health</span></div>
     <div class="two-col">
 
       <div class="an-section">
         <div class="an-section-head">
-          <span class="an-section-head-icon">📊</span>
+          <span class="an-section-head-icon">ðŸ“Š</span>
           <span class="an-section-title">Moderation Rates</span>
         </div>
         <div class="an-section-body">
@@ -855,7 +856,7 @@ if (table_exists($conn, 'events')) {
 
       <div class="an-section">
         <div class="an-section-head">
-          <span class="an-section-head-icon">🛡</span>
+          <span class="an-section-head-icon">ðŸ›¡</span>
           <span class="an-section-title">SafeSpeak & Safety</span>
         </div>
         <div class="an-section-body">
@@ -891,11 +892,11 @@ if (table_exists($conn, 'events')) {
       </div>
     </div>
 
-    <!-- ═══ TOP POSTS ═══ -->
+    <!-- â•â•â• TOP POSTS â•â•â• -->
     <div class="section-label"><span class="section-label-text">Top Content</span></div>
     <div class="an-section">
       <div class="an-section-head">
-        <span class="an-section-head-icon">🏆</span>
+        <span class="an-section-head-icon">ðŸ†</span>
         <span class="an-section-title">Top Posts by Engagement</span>
       </div>
       <div class="an-section-body">
@@ -922,22 +923,22 @@ if (table_exists($conn, 'events')) {
                     <td><span class="chip chip-likes"><?php echo number_format((int)($row['likes']??0)); ?></span></td>
                     <td><span class="chip chip-comments"><?php echo number_format((int)($row['comments']??0)); ?></span></td>
                     <td><span class="chip chip-shares"><?php echo number_format((int)($row['shares']??0)); ?></span></td>
-                    <td style="white-space:nowrap"><?php echo !empty($row['created_at']) ? date('M d, Y', strtotime($row['created_at'])) : '—'; ?></td>
+                    <td style="white-space:nowrap"><?php echo !empty($row['created_at']) ? date('M d, Y', strtotime($row['created_at'])) : 'â€”'; ?></td>
                   </tr>
                 <?php endforeach; ?>
               </tbody>
             </table>
           </div>
         <?php else: ?>
-          <div class="an-empty"><span>📭</span><p>No posts found yet.</p></div>
+          <div class="an-empty"><span>ðŸ“­</span><p>No posts found yet.</p></div>
         <?php endif; ?>
       </div>
     </div>
 
-    <!-- ═══ TOP EVENTS ═══ -->
+    <!-- â•â•â• TOP EVENTS â•â•â• -->
     <div class="an-section" style="margin-top:1rem">
       <div class="an-section-head">
-        <span class="an-section-head-icon">🗓</span>
+        <span class="an-section-head-icon">ðŸ—“</span>
         <span class="an-section-title">Top Events by Engagement</span>
       </div>
       <div class="an-section-body">
@@ -964,14 +965,14 @@ if (table_exists($conn, 'events')) {
                     <td><span class="chip chip-likes"><?php echo number_format((int)($row['likes']??0)); ?></span></td>
                     <td><span class="chip chip-comments"><?php echo number_format((int)($row['comments']??0)); ?></span></td>
                     <td><span class="chip chip-shares"><?php echo number_format((int)($row['shares']??0)); ?></span></td>
-                    <td style="white-space:nowrap"><?php echo !empty($row['event_date']) ? date('M d, Y', strtotime($row['event_date'])) : '—'; ?></td>
+                    <td style="white-space:nowrap"><?php echo !empty($row['event_date']) ? date('M d, Y', strtotime($row['event_date'])) : 'â€”'; ?></td>
                   </tr>
                 <?php endforeach; ?>
               </tbody>
             </table>
           </div>
         <?php else: ?>
-          <div class="an-empty"><span>📭</span><p>No events found yet.</p></div>
+          <div class="an-empty"><span>ðŸ“­</span><p>No events found yet.</p></div>
         <?php endif; ?>
       </div>
     </div>

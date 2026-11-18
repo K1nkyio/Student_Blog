@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 
 if (empty($_SESSION['admin'])) {
@@ -438,3 +439,4 @@ if ($pendingStmt) {
 </div>
 
 <?php include '../admin/includes/footer.php'; ?>
+

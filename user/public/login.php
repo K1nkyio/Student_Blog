@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -42,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$page_title = 'Sign In — ' . SITE_NAME;
+$page_title = 'Sign In â€” ' . SITE_NAME;
 include '../shared/header.php';
 ?>
 
@@ -51,9 +52,9 @@ include '../shared/header.php';
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
-   DESIGN TOKENS — exact mirror of opportunities.php
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DESIGN TOKENS â€” exact mirror of opportunities.php
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -92,18 +93,18 @@ body {
   min-height: 100vh;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    FULL-VIEWPORT SPLIT SHELL
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .auth-shell {
   min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
 
-/* ═══════════════════════════════════════════
-   LEFT — FORM SIDE
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   LEFT â€” FORM SIDE
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .auth-form-side {
   background: var(--bg);
   display: flex;
@@ -136,7 +137,7 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── form eyebrow ── */
+/* â”€â”€ form eyebrow â”€â”€ */
 .form-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -152,7 +153,7 @@ body {
   margin-bottom: .9rem;
 }
 
-/* ── form heading ── */
+/* â”€â”€ form heading â”€â”€ */
 .form-heading {
   margin-bottom: 1.75rem;
 }
@@ -176,7 +177,7 @@ body {
   line-height: 1.65;
 }
 
-/* ── alert ── */
+/* â”€â”€ alert â”€â”€ */
 .auth-alert {
   display: flex;
   align-items: flex-start;
@@ -191,7 +192,7 @@ body {
 .auth-alert.error   { background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(176,48,48,.18); }
 .auth-alert.success { background: var(--green-dim); color: var(--green); border: 1px solid rgba(26,122,74,.18); }
 
-/* ── field groups ── */
+/* â”€â”€ field groups â”€â”€ */
 .form-group { margin-bottom: 1.15rem; }
 
 .form-label {
@@ -264,14 +265,14 @@ body {
 .toggle-pw:hover { color: var(--ink); background: var(--bg-warm); border-color: var(--ink-mid); }
 .toggle-pw svg { width: 13px; height: 13px; }
 
-/* ── divider ── */
+/* â”€â”€ divider â”€â”€ */
 .form-divider {
   height: 1px;
   background: var(--rule-light);
   margin: 1.5rem 0;
 }
 
-/* ── submit button — same as .btn-primary from opp list ── */
+/* â”€â”€ submit button â€” same as .btn-primary from opp list â”€â”€ */
 .btn-submit {
   width: 100%;
   display: flex;
@@ -305,7 +306,7 @@ body {
 }
 .btn-submit svg { width: 14px; height: 14px; }
 
-/* ── form footer ── */
+/* â”€â”€ form footer â”€â”€ */
 .form-foot {
   margin-top: 1.35rem;
   text-align: center;
@@ -320,10 +321,10 @@ body {
 }
 .form-foot a:hover { color: var(--ink); }
 
-/* ═══════════════════════════════════════════
-   RIGHT — DARK EDITORIAL PANEL
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   RIGHT â€” DARK EDITORIAL PANEL
    (identical treatment to .opp-hero)
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .auth-visual-side {
   background: var(--ink);
   color: #fff;
@@ -335,7 +336,7 @@ body {
   overflow: hidden;
 }
 
-/* serif watermark — same as opp-hero::before */
+/* serif watermark â€” same as opp-hero::before */
 .auth-visual-side::before {
   content: 'Back.';
   position: absolute;
@@ -351,7 +352,7 @@ body {
   user-select: none;
 }
 
-/* dot grid — same as opp-hero::after */
+/* dot grid â€” same as opp-hero::after */
 .auth-visual-side::after {
   content: '';
   position: absolute;
@@ -387,7 +388,7 @@ body {
 }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-/* eyebrow — same component as opp hero */
+/* eyebrow â€” same component as opp hero */
 .visual-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -428,7 +429,7 @@ body {
   margin-bottom: 2.25rem;
 }
 
-/* feature tiles — 2×2 grid */
+/* feature tiles â€” 2Ã—2 grid */
 .visual-tiles {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -489,9 +490,9 @@ body {
 }
 .visual-switch a:hover { color: #fff; border-bottom-color: rgba(255,255,255,.5); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 840px) {
   .auth-shell { grid-template-columns: 1fr; }
   .auth-visual-side {
@@ -515,7 +516,7 @@ body {
 
 <div class="auth-shell">
 
-  <!-- ══════ LEFT: FORM ══════ -->
+  <!-- â•â•â•â•â•â• LEFT: FORM â•â•â•â•â•â• -->
   <div class="auth-form-side">
     <div class="form-wrap">
 
@@ -583,13 +584,13 @@ body {
           </svg>
         </button>
 
-        <p class="form-foot">Don't have an account? <a href="register.php">Create one →</a></p>
+        <p class="form-foot">Don't have an account? <a href="register.php">Create one â†’</a></p>
       </form>
 
     </div>
   </div>
 
-  <!-- ══════ RIGHT: DARK EDITORIAL PANEL ══════ -->
+  <!-- â•â•â•â•â•â• RIGHT: DARK EDITORIAL PANEL â•â•â•â•â•â• -->
   <div class="auth-visual-side">
     <div class="visual-top">
       <div class="visual-brand">
@@ -654,7 +655,7 @@ body {
     <div class="visual-bot">
       <div class="visual-rule"></div>
       <p class="visual-switch">
-        New here? <a href="register.php">Create a free account →</a>
+        New here? <a href="register.php">Create a free account â†’</a>
       </p>
     </div>
   </div>
@@ -663,7 +664,7 @@ body {
 
 <script>
 (function () {
-  /* ── Password toggle ── */
+  /* â”€â”€ Password toggle â”€â”€ */
   const togglePw = document.getElementById('togglePw');
   const pwInput  = document.getElementById('password');
   const eyeIcon  = document.getElementById('eyeIcon');
@@ -676,12 +677,12 @@ body {
       : '<path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/>';
   });
 
-  /* ── Submit loading state ── */
+  /* â”€â”€ Submit loading state â”€â”€ */
   document.getElementById('loginForm')?.addEventListener('submit', function () {
     const btn = document.getElementById('submitBtn');
     if (btn) {
       btn.disabled = true;
-      btn.innerHTML = '<svg style="animation:spin .7s linear infinite" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/></svg> Signing in…';
+      btn.innerHTML = '<svg style="animation:spin .7s linear infinite" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/></svg> Signing inâ€¦';
     }
   });
 

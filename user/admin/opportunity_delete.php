@@ -1,11 +1,14 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 if (!isset($_SESSION['admin'])) {
     header('Location: register.php');
     exit();
 }
 
 include '../shared/db_connect.php';
+require_once dirname(__DIR__) . '/shared/admin_auth.php';
+require_admin_access($conn);
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id > 0) {
@@ -17,4 +20,5 @@ if ($id > 0) {
 
 header('Location: opportunities.php');
 exit();
+
 

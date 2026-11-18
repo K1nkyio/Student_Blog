@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -122,7 +123,7 @@ $sellerInitials= 'CS';
 $phoneDigits   = !empty($item['contact']) ? preg_replace('/\D+/', '', $item['contact']) : '';
 $sellerNumber  = $item['contact'] ?: '';
 
-$page_title      = htmlspecialchars($item['title']) . ' — Marketplace';
+$page_title      = htmlspecialchars($item['title']) . ' â€” Marketplace';
 $meta_description = 'Marketplace item details.';
 
 include '../shared/header.php';
@@ -133,9 +134,9 @@ include '../shared/header.php';
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
-   DESIGN TOKENS — exact match opportunities.php
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DESIGN TOKENS â€” exact match opportunities.php
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -184,9 +185,9 @@ a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 button { font-family: inherit; }
 
-/* ═══════════════════════════════════════════
-   HERO STRIP — same dark-ink as opp-hero
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HERO STRIP â€” same dark-ink as opp-hero
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .item-hero {
   background: var(--ink);
   color: #fff;
@@ -246,7 +247,7 @@ button { font-family: inherit; }
 .hero-crumbs a:hover { color: #fff; }
 .hero-crumbs svg { width: 10px; height: 10px; opacity: .4; }
 
-/* eyebrow — same live-dot pattern */
+/* eyebrow â€” same live-dot pattern */
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -291,9 +292,9 @@ button { font-family: inherit; }
 .hero-meta-item { display: inline-flex; align-items: center; gap: .28rem; }
 .hero-meta-item svg { width: 11px; height: 11px; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    ALERT BANNER
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .alert-wrap {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -312,16 +313,16 @@ button { font-family: inherit; }
 .alert-banner--success { background: var(--green-dim); color: var(--green); border: 1px solid rgba(26,122,74,.18); }
 .alert-banner--error   { background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(176,48,48,.18); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PAGE BODY
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .item-body {
   max-width: var(--max-w);
   margin: 0 auto;
   padding: 2rem var(--gutter) 6rem;
 }
 
-/* ── Main layout grid ── */
+/* â”€â”€ Main layout grid â”€â”€ */
 .item-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
@@ -330,9 +331,9 @@ button { font-family: inherit; }
   margin-bottom: 2.5rem;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    GALLERY
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .gallery { display: flex; flex-direction: column; gap: .85rem; }
 
 .gallery-hero {
@@ -369,7 +370,7 @@ button { font-family: inherit; }
   z-index: 1;
 }
 
-/* photo count pill — bottom-right */
+/* photo count pill â€” bottom-right */
 .photo-pill {
   position: absolute;
   bottom: 10px; right: 10px;
@@ -425,9 +426,9 @@ button { font-family: inherit; }
 .gallery-no-img svg { width: 36px; height: 36px; color: var(--rule); }
 .gallery-no-img span { font-size: .78rem; color: var(--ink-light); font-weight: 500; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    INFO PANEL (sticky right)
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .info-panel {
   position: sticky;
   top: 1.5rem;
@@ -436,7 +437,7 @@ button { font-family: inherit; }
   gap: 1rem;
 }
 
-/* card — same treatment as home panel cards */
+/* card â€” same treatment as home panel cards */
 .panel-card {
   background: #fff;
   border: 1px solid var(--rule-light);
@@ -455,7 +456,7 @@ button { font-family: inherit; }
   margin-bottom: .45rem;
 }
 
-/* item title — serif, large */
+/* item title â€” serif, large */
 .item-title {
   font-family: var(--font-serif);
   font-size: clamp(1.55rem, 3vw, 2.2rem);
@@ -466,7 +467,7 @@ button { font-family: inherit; }
   margin-bottom: 1rem;
 }
 
-/* badge strip — same .badge pattern */
+/* badge strip â€” same .badge pattern */
 .badge-strip { display: flex; gap: .35rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
 
 .badge {
@@ -576,7 +577,7 @@ button { font-family: inherit; }
 .seller-sub { font-size: .72rem; color: var(--ink-light); margin-top: .1rem; }
 .seller-actions { display: flex; gap: .35rem; }
 
-/* icon buttons — matches admin .btn-icon */
+/* icon buttons â€” matches admin .btn-icon */
 .icon-btn {
   width: 32px; height: 32px;
   border: 1.5px solid var(--rule);
@@ -626,7 +627,7 @@ button { font-family: inherit; }
 /* CTA buttons */
 .cta-stack { display: flex; flex-direction: column; gap: .5rem; }
 
-/* WhatsApp — green primary */
+/* WhatsApp â€” green primary */
 .cta-whatsapp {
   display: flex; align-items: center; justify-content: center; gap: .5rem;
   background: #25d366; color: #fff;
@@ -644,7 +645,7 @@ button { font-family: inherit; }
 /* secondary row */
 .cta-row { display: flex; gap: .5rem; }
 
-/* cart / buy — ink primary & ghost */
+/* cart / buy â€” ink primary & ghost */
 .cta-cart {
   flex: 1;
   display: flex; align-items: center; justify-content: center; gap: .45rem;
@@ -714,9 +715,9 @@ button { font-family: inherit; }
 }
 .trust-chip svg { width: 10px; height: 10px; color: var(--green); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    COLLAPSIBLE CONTENT SECTIONS
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .content-sections {
   display: flex; flex-direction: column; gap: .75rem;
 }
@@ -729,7 +730,7 @@ button { font-family: inherit; }
   box-shadow: var(--shadow);
 }
 
-/* section header — same warm bg card-header pattern */
+/* section header â€” same warm bg card-header pattern */
 .sec-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 1rem 1.35rem;
@@ -828,7 +829,7 @@ button { font-family: inherit; }
   color: var(--ink);
 }
 
-/* ── Comments / Q&A ── */
+/* â”€â”€ Comments / Q&A â”€â”€ */
 .qa-wrap {}
 .qa-form-label {
   font-size: .72rem;
@@ -916,7 +917,7 @@ button { font-family: inherit; }
 }
 .no-comments svg { width: 28px; height: 28px; margin: 0 auto .5rem; opacity: .3; display: block; }
 
-/* ── Product cards (related / recent) ── */
+/* â”€â”€ Product cards (related / recent) â”€â”€ */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -978,9 +979,9 @@ button { font-family: inherit; }
 }
 .empty-section svg { width: 24px; height: 24px; margin: 0 auto .5rem; opacity: .3; display: block; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    LIGHTBOX
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .lightbox {
   position: fixed; inset: 0;
   background: rgba(24,22,15,.85);
@@ -1026,9 +1027,9 @@ button { font-family: inherit; }
 .lightbox-prev { left: -3rem; }
 .lightbox-next { right: -3rem; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 1024px) {
   .products-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -1050,7 +1051,7 @@ button { font-family: inherit; }
 }
 </style>
 
-<!-- ══════ HERO STRIP ══════ -->
+<!-- â•â•â•â•â•â• HERO STRIP â•â•â•â•â•â• -->
 <div class="item-hero">
   <div class="hero-inner">
 
@@ -1064,7 +1065,7 @@ button { font-family: inherit; }
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <a href="marketplace.php">Marketplace</a>
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 2l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span><?php echo htmlspecialchars(mb_strimwidth($item['title'], 0, 42, '…')); ?></span>
+      <span><?php echo htmlspecialchars(mb_strimwidth($item['title'], 0, 42, 'â€¦')); ?></span>
     </nav>
 
     <div class="hero-eyebrow">
@@ -1113,11 +1114,11 @@ button { font-family: inherit; }
 </div>
 <?php endif; ?>
 
-<!-- ══════ BODY ══════ -->
+<!-- â•â•â•â•â•â• BODY â•â•â•â•â•â• -->
 <div class="item-body">
   <div class="item-layout">
 
-    <!-- ── Left: Gallery ── -->
+    <!-- â”€â”€ Left: Gallery â”€â”€ -->
     <div class="gallery">
       <div class="gallery-hero" id="openLightbox">
         <?php if (!empty($images)): ?>
@@ -1171,7 +1172,7 @@ button { font-family: inherit; }
       </div>
     </div>
 
-    <!-- ── Right: Info Panel ── -->
+    <!-- â”€â”€ Right: Info Panel â”€â”€ -->
     <div class="info-panel">
       <div class="panel-card">
 
@@ -1238,7 +1239,7 @@ button { font-family: inherit; }
                   Verified
                 </span>
               </div>
-              <div class="seller-sub">★★★★★ 4.8 · 32 reviews</div>
+              <div class="seller-sub">â˜…â˜…â˜…â˜…â˜… 4.8 Â· 32 reviews</div>
             </div>
           </div>
           <div class="seller-actions">
@@ -1255,7 +1256,7 @@ button { font-family: inherit; }
         <div class="qty-row">
           <span class="qty-label">Quantity</span>
           <div class="qty-control">
-            <button class="qty-btn" id="qtyMinus" type="button">−</button>
+            <button class="qty-btn" id="qtyMinus" type="button">âˆ’</button>
             <span class="qty-sep"></span>
             <input class="qty-input" id="quantityInput" type="number" min="1" value="1">
             <span class="qty-sep"></span>
@@ -1347,7 +1348,7 @@ button { font-family: inherit; }
     </div><!-- /.info-panel -->
   </div><!-- /.item-layout -->
 
-  <!-- ══════ CONTENT SECTIONS ══════ -->
+  <!-- â•â•â•â•â•â• CONTENT SECTIONS â•â•â•â•â•â• -->
   <div class="content-sections">
 
     <!-- Description -->
@@ -1387,7 +1388,7 @@ button { font-family: inherit; }
         <div class="details-table">
           <div class="detail-cell">
             <div class="detail-label">Condition</div>
-            <div class="detail-value"><?php echo htmlspecialchars($item['item_condition'] ?: '—'); ?></div>
+            <div class="detail-value"><?php echo htmlspecialchars($item['item_condition'] ?: 'â€”'); ?></div>
           </div>
           <div class="detail-cell">
             <div class="detail-label">Category</div>
@@ -1395,7 +1396,7 @@ button { font-family: inherit; }
           </div>
           <div class="detail-cell">
             <div class="detail-label">Location</div>
-            <div class="detail-value"><?php echo htmlspecialchars($item['location'] ?: '—'); ?></div>
+            <div class="detail-value"><?php echo htmlspecialchars($item['location'] ?: 'â€”'); ?></div>
           </div>
           <div class="detail-cell">
             <div class="detail-label">Negotiable</div>
@@ -1403,7 +1404,7 @@ button { font-family: inherit; }
           </div>
           <div class="detail-cell">
             <div class="detail-label">Variant</div>
-            <div class="detail-value"><?php echo htmlspecialchars($item['variant'] ?: '—'); ?></div>
+            <div class="detail-value"><?php echo htmlspecialchars($item['variant'] ?: 'â€”'); ?></div>
           </div>
           <div class="detail-cell">
             <div class="detail-label">Status</div>
@@ -1415,7 +1416,7 @@ button { font-family: inherit; }
           </div>
           <div class="detail-cell">
             <div class="detail-label">Contact</div>
-            <div class="detail-value"><?php echo htmlspecialchars($sellerNumber ?: '—'); ?></div>
+            <div class="detail-value"><?php echo htmlspecialchars($sellerNumber ?: 'â€”'); ?></div>
           </div>
         </div>
       </div>
@@ -1460,7 +1461,7 @@ button { font-family: inherit; }
             <input type="hidden" name="action" value="comment">
             <textarea name="comment" class="qa-textarea" id="commentText"
                       maxlength="1000"
-                      placeholder="Write your question or comment here…"
+                      placeholder="Write your question or comment hereâ€¦"
                       required></textarea>
             <div class="qa-form-foot">
               <span class="char-count" id="commentCount">0 / 1000</span>
@@ -1535,7 +1536,7 @@ button { font-family: inherit; }
   </div><!-- /.content-sections -->
 </div><!-- /.item-body -->
 
-<!-- ══════ LIGHTBOX ══════ -->
+<!-- â•â•â•â•â•â• LIGHTBOX â•â•â•â•â•â• -->
 <div class="lightbox" id="lightboxModal">
   <div class="lightbox-inner">
     <button class="lightbox-close" id="lightboxClose">
@@ -1563,12 +1564,12 @@ const recentPool    = <?php echo json_encode($recentPool, JSON_UNESCAPED_SLASHES
 const imageSources  = <?php echo json_encode($images,    JSON_UNESCAPED_SLASHES); ?>;
 const gallerySources = Array.isArray(imageSources) && imageSources.length ? [...imageSources] : [];
 
-/* ── Collapsible sections ── */
+/* â”€â”€ Collapsible sections â”€â”€ */
 document.querySelectorAll('[data-section]').forEach(sec => {
   sec.querySelector('[data-toggle]')?.addEventListener('click', () => sec.classList.toggle('open'));
 });
 
-/* ── Thumbnails ── */
+/* â”€â”€ Thumbnails â”€â”€ */
 const mainImage  = document.getElementById('mainImage');
 const thumbs     = document.querySelectorAll('.thumb-item[data-src]');
 let lightboxIndex = 0;
@@ -1600,7 +1601,7 @@ if (mainImage) {
   });
 }
 
-/* ── Lightbox ── */
+/* â”€â”€ Lightbox â”€â”€ */
 const lb    = document.getElementById('lightboxModal');
 const lbImg = document.getElementById('lightboxImage');
 
@@ -1625,7 +1626,7 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'Escape')     closeLb();
 });
 
-/* ── View counter ── */
+/* â”€â”€ View counter â”€â”€ */
 const viewKey   = `marketplace_views_${currentItemId}`;
 const viewedKey = `marketplace_viewed_${currentItemId}`;
 let views = parseInt(localStorage.getItem(viewKey) || '0', 10) || 0;
@@ -1637,7 +1638,7 @@ if (!sessionStorage.getItem(viewedKey)) {
 const vc = document.getElementById('viewCount');
 if (vc) vc.textContent = String(views);
 
-/* ── Likes ── */
+/* â”€â”€ Likes â”€â”€ */
 const likeKey      = `marketplace_like_${currentItemId}`;
 const likeCountKey = `marketplace_like_count_${currentItemId}`;
 const likeBtn  = document.getElementById('likeBtn');
@@ -1662,7 +1663,7 @@ likeBtn?.addEventListener('click', () => {
   updateLike();
 });
 
-/* ── Quantity sync ── */
+/* â”€â”€ Quantity sync â”€â”€ */
 const qtyInput  = document.getElementById('quantityInput');
 const qtyFields = document.querySelectorAll('.quantity-field');
 const syncQty   = () => {
@@ -1677,7 +1678,7 @@ document.getElementById('qtyPlus')?.addEventListener('click',  () => { if (qtyIn
 qtyInput?.addEventListener('input', syncQty);
 syncQty();
 
-/* ── Comment char count ── */
+/* â”€â”€ Comment char count â”€â”€ */
 const commentText  = document.getElementById('commentText');
 const commentCount = document.getElementById('commentCount');
 if (commentText && commentCount) {
@@ -1686,7 +1687,7 @@ if (commentText && commentCount) {
   commentText.addEventListener('input', update);
 }
 
-/* ── Recently viewed ── */
+/* â”€â”€ Recently viewed â”€â”€ */
 const recentKey = 'marketplace_recent';
 let recentList  = [];
 try { recentList = JSON.parse(localStorage.getItem(recentKey) || '[]'); } catch { recentList = []; }
@@ -1718,7 +1719,7 @@ if (recentGrid) {
   }
 }
 
-/* ── Share ── */
+/* â”€â”€ Share â”€â”€ */
 document.getElementById('shareBtn')?.addEventListener('click', async () => {
   if (navigator.share) {
     try { await navigator.share({ title: document.title, url: location.href }); } catch {}
@@ -1734,10 +1735,11 @@ document.getElementById('shareBtn')?.addEventListener('click', async () => {
   }
 });
 
-/* ── Report ── */
+/* â”€â”€ Report â”€â”€ */
 document.getElementById('reportBtn')?.addEventListener('click', () => {
   alert('Thank you for the report. Our team will review this listing.');
 });
 </script>
 
 <?php include '../shared/footer.php'; ?>
+

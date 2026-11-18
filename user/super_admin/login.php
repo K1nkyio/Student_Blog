@@ -1,51 +1,107 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 include('../shared/db_connect.php');
+require_once dirname(__DIR__) . '/shared/admin_auth.php';
 include('../admin/includes/admin_utils.php');
+ensure_admin_auth_schema($conn);
 
 $error = '';
+$mfaChallenge = ($_SESSION['pending_super_admin_stage'] ?? '') === 'verify'
+    && (time() - (int)($_SESSION['pending_super_admin_at'] ?? 0)) <= 300;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $identifier = trim($_POST['identifier'] ?? '');
-    $password   = md5($_POST['password'] ?? '');
+    if (($_POST['action'] ?? '') === 'verify_mfa') {
+        $pendingId = (int)($_SESSION['pending_super_admin_id'] ?? 0);
+        $attemptKey = admin_login_attempt_key('mfa:' . $pendingId);
+        $stmt = $conn->prepare("SELECT id, username, role, status, mfa_secret, mfa_enabled FROM admins WHERE id = ? LIMIT 1");
+        $stmt->bind_param('i', $pendingId);
+        $stmt->execute();
+        $admin = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        if (!$mfaChallenge || !$admin || $admin['role'] !== 'super_admin' || $admin['status'] !== 'approved'
+            || empty($admin['mfa_enabled']) || admin_login_is_throttled($conn, $attemptKey)) {
+            $error = 'The verification session expired or is temporarily locked. Sign in again later.';
+        } else {
+            $secret = admin_mfa_decrypt((string)$admin['mfa_secret']);
+            if (admin_mfa_verify($secret, (string)($_POST['mfa_code'] ?? ''))) {
+                admin_login_clear_failures($conn, $attemptKey);
+                unset($_SESSION['pending_super_admin_id'], $_SESSION['pending_super_admin_stage'], $_SESSION['pending_super_admin_at']);
+                admin_session_login($admin, true);
+                $ip = admin_request_ip();
+                $update = $conn->prepare('UPDATE admins SET last_login_at = NOW(), last_login_ip = ? WHERE id = ?');
+                $update->bind_param('si', $ip, $admin['id']);
+                $update->execute();
+                $update->close();
+                log_admin_audit($conn, 'login_success', (int)$admin['id'], null, 'Super admin login with MFA');
+                header('Location: users.php');
+                exit();
+            }
+            admin_login_record_failure($conn, $attemptKey);
+            $error = 'Invalid verification code.';
+        }
+        $mfaChallenge = true;
+    } else {
+        unset($_SESSION['admin'], $_SESSION['admin_id'], $_SESSION['admin_role'], $_SESSION['admin_mfa_verified'], $_SESSION['admin_authenticated_at'], $_SESSION['admin_last_activity']);
+        $identifier = trim($_POST['identifier'] ?? '');
+        $password = (string)($_POST['password'] ?? '');
+        $attemptKey = admin_login_attempt_key($identifier);
 
-    $stmt = $conn->prepare("SELECT id, username, role, status, password FROM admins WHERE username = ? OR email = ? LIMIT 1");
+        if (admin_login_is_throttled($conn, $attemptKey)) {
+            $error = 'Too many sign-in attempts. Please wait 15 minutes and try again.';
+        } else {
+
+    $stmt = $conn->prepare("SELECT id, username, role, status, password, mfa_secret, mfa_enabled FROM admins WHERE username = ? OR email = ? LIMIT 1");
     $stmt->bind_param("ss", $identifier, $identifier);
     $stmt->execute();
     $admin = $stmt->get_result()->fetch_assoc();
     $stmt->close();
 
+    $upgradedHash = null;
+    $passwordValid = $admin && admin_password_verify($password, (string)($admin['password'] ?? ''), $upgradedHash);
     if (!$admin) {
+        admin_login_record_failure($conn, $attemptKey);
         log_admin_audit($conn, 'login_failed', null, null, 'Unknown account: ' . $identifier);
         $error = "Invalid username or password.";
-    } elseif (!hash_equals($admin['password'] ?? '', $password)) {
+    } elseif (!$passwordValid) {
+        admin_login_record_failure($conn, $attemptKey);
         log_admin_audit($conn, 'login_failed', (int)$admin['id'], null, 'Incorrect password');
         $error = "Invalid username or password.";
     } elseif (($admin['role'] ?? '') !== 'super_admin') {
+        admin_login_record_failure($conn, $attemptKey);
         log_admin_audit($conn, 'login_denied', (int)$admin['id'], null, 'Not a super admin');
         $error = "This portal is for super admins only. Use the admin access page.";
-    } elseif (($admin['status'] ?? 'pending') === 'pending') {
+    } elseif (($admin['status'] ?? 'pending') !== 'approved') {
+        admin_login_record_failure($conn, $attemptKey);
         log_admin_audit($conn, 'login_pending', (int)$admin['id'], null, 'Awaiting approval');
-        $error = "Your account is awaiting approval by the super admin.";
-    } elseif (($admin['status'] ?? '') === 'deactivated') {
-        log_admin_audit($conn, 'login_deactivated', (int)$admin['id'], null, 'Account deactivated');
-        $error = "Your account has been deactivated. Please contact the super admin.";
+        $error = "This account is not active. Contact the super admin.";
     } else {
-        $_SESSION['admin'] = $admin['username'] ?? $identifier;
-        $_SESSION['admin_id'] = (int)($admin['id'] ?? 0);
-        $_SESSION['admin_role'] = $admin['role'] ?? 'admin';
-
-        $ip = admin_request_ip();
-        $update = $conn->prepare("UPDATE admins SET last_login_at = NOW(), last_login_ip = ? WHERE id = ?");
-        $update->bind_param("si", $ip, $_SESSION['admin_id']);
-        $update->execute();
-        $update->close();
-
-        log_admin_audit($conn, 'login_success', (int)$_SESSION['admin_id'], null, 'Super admin login');
-        header('Location: users.php');
-        exit();
+        if ($upgradedHash !== null) {
+            $upgrade = $conn->prepare('UPDATE admins SET password = ? WHERE id = ?');
+            $upgrade->bind_param('si', $upgradedHash, $admin['id']);
+            $upgrade->execute();
+            $upgrade->close();
+        }
+        admin_login_clear_failures($conn, $attemptKey);
+        if (!empty($admin['mfa_enabled'])) {
+            session_regenerate_id(true);
+            $_SESSION['pending_super_admin_id'] = (int)$admin['id'];
+            $_SESSION['pending_super_admin_stage'] = 'verify';
+            $_SESSION['pending_super_admin_at'] = time();
+            $mfaChallenge = true;
+        } else {
+            session_regenerate_id(true);
+            $_SESSION['pending_super_admin_id'] = (int)$admin['id'];
+            $_SESSION['pending_super_admin_stage'] = 'enroll';
+            $_SESSION['pending_super_admin_at'] = time();
+            $_SESSION['pending_super_admin_secret'] = admin_mfa_new_secret();
+            header('Location: setup_mfa.php');
+            exit();
+        }
+    }
+    }
     }
 }
 ?>
@@ -54,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Super Admin Sign In — Student Blog</title>
+  <title>Super Admin Sign In â€” Student Blog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -337,6 +393,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <?php endif; ?>
 
       <form method="post" novalidate>
+        <?php if ($mfaChallenge): ?>
+        <input type="hidden" name="action" value="verify_mfa">
+        <div class="field">
+          <label class="field-label" for="mfa_code">Authenticator code</label>
+          <input id="mfa_code" class="field-input" type="text" name="mfa_code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required autocomplete="one-time-code">
+        </div>
+        <button class="btn-submit" type="submit">Verify code</button>
+        <?php else: ?>
         <div class="field">
           <label class="field-label" for="identifier">Username or Email</label>
           <input id="identifier" class="field-input" type="text" name="identifier"
@@ -350,6 +414,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <button class="btn-submit" type="submit">Sign In</button>
+        <?php endif; ?>
       </form>
 
       <div class="form-footer">
@@ -359,3 +424,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 </body>
 </html>
+

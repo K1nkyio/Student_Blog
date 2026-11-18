@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 
 if (!isset($_SESSION['admin'])) {
@@ -9,6 +10,8 @@ if (!isset($_SESSION['admin'])) {
 }
 
 include '../shared/db_connect.php';
+require_once dirname(__DIR__) . '/shared/admin_auth.php';
+require_admin_access($conn);
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id > 0) {
@@ -20,4 +23,5 @@ if ($id > 0) {
 
 header('Location: events.php');
 exit();
+
 

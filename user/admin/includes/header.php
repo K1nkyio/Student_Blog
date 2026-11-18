@@ -1,18 +1,18 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__, 2) . '/shared/session.php';
+    start_project_session();
 }
 
 $current_path = $_SERVER['PHP_SELF'] ?? '';
 $is_super_admin_section = strpos($current_path, '/super_admin/') !== false;
+$authDbPath = dirname(__DIR__, 2) . '/shared/db_connect.php';
+require_once dirname(__DIR__, 2) . '/shared/admin_auth.php';
+require_once $authDbPath;
+require_admin_access($conn, $is_super_admin_section ? 'super_admin' : null);
 $login_url = $is_super_admin_section ? '../super_admin/login.php' : 'register.php';
 $logout_url = $is_super_admin_section ? '../super_admin/logout.php' : 'logout.php';
 $admin_link_prefix = $is_super_admin_section ? '../admin/' : '';
-
-if (!isset($_SESSION['admin'])) {
-    header('Location: ' . $login_url);
-    exit();
-}
 
 $current_page = basename($_SERVER['PHP_SELF'] ?? '');
 $admin_name   = (string)($_SESSION['admin'] ?? 'Admin');
@@ -127,7 +127,7 @@ if ($is_super_admin_section && !empty($super_admin_nav_override)) {
     ];
 }
 
-/* SVG icon helper — keeps Font Awesome dependency-free */
+/* SVG icon helper â€” keeps Font Awesome dependency-free */
 function sb_icon(string $name): string {
     $icons = [
         'gauge'     => '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 2c2.09 0 4 .76 5.46 2l-1.42 1.42C14.95 6.54 13.52 6 12 6s-2.95.54-4.04 1.42L6.54 6C7.99 4.76 9.9 4 12 4zm0 16c-4.41 0-8-3.59-8-8 0-2.09.8-3.99 2.1-5.42l1.42 1.42C6.59 9.05 6 10.46 6 12c0 3.31 2.69 6 6 6s6-2.69 6-6c0-1.54-.59-2.95-1.54-4l1.42-1.42C19.2 8.01 20 9.91 20 12c0 4.41-3.59 8-8 8zm1-8.41l-3-3-1.41 1.41 4.41 4.41 6.41-6.41-1.41-1.41L13 11.59z" fill="currentColor"/>',
@@ -152,15 +152,15 @@ function sb_icon(string $name): string {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($topbar_title); ?> — Admin</title>
+    <title><?php echo htmlspecialchars($topbar_title); ?> â€” Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-    /* ═══════════════════════════════════════════════════════════
-       DESIGN TOKENS — exact match with opportunities.php
-    ═══════════════════════════════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       DESIGN TOKENS â€” exact match with opportunities.php
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     :root {
         /* palette */
         --bg:           #f5f2ed;
@@ -201,7 +201,7 @@ function sb_icon(string $name): string {
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ─── BASE ─── */
+    /* â”€â”€â”€ BASE â”€â”€â”€ */
     body.admin-shell {
         min-height: 100vh;
         background: var(--bg);
@@ -211,17 +211,17 @@ function sb_icon(string $name): string {
         line-height: 1.6;
     }
 
-    /* ═══════════════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        LAYOUT
-    ═══════════════════════════════════════════════════════════ */
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .admin-app {
         display: flex;
         min-height: 100vh;
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       SIDEBAR — dark ink panel, same as auth & hero
-    ═══════════════════════════════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       SIDEBAR â€” dark ink panel, same as auth & hero
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .admin-sidebar {
         width: var(--sb-w);
         flex-shrink: 0;
@@ -236,7 +236,7 @@ function sb_icon(string $name): string {
         transition: width var(--transition);
     }
 
-    /* dot-grid texture — matches hero overlay */
+    /* dot-grid texture â€” matches hero overlay */
     .admin-sidebar::after {
         content: '';
         position: absolute;
@@ -247,7 +247,7 @@ function sb_icon(string $name): string {
         z-index: 0;
     }
 
-    /* serif watermark — same as auth panels */
+    /* serif watermark â€” same as auth panels */
     .admin-sidebar::before {
         content: 'Adm.';
         position: absolute;
@@ -274,7 +274,7 @@ function sb_icon(string $name): string {
         overflow: hidden;
     }
 
-    /* ─── BRAND ─── */
+    /* â”€â”€â”€ BRAND â”€â”€â”€ */
     .sb-brand {
         display: flex;
         align-items: center;
@@ -286,7 +286,7 @@ function sb_icon(string $name): string {
         min-width: 0;
     }
 
-    /* eyebrow dot — matches live-dot */
+    /* eyebrow dot â€” matches live-dot */
     .sb-logo-wrap {
         flex-shrink: 0;
         display: flex;
@@ -362,7 +362,7 @@ function sb_icon(string $name): string {
         margin-left: 0;
     }
 
-    /* ─── SECTION LABEL ─── */
+    /* â”€â”€â”€ SECTION LABEL â”€â”€â”€ */
     .sb-section-label {
         font-size: .6rem;
         font-weight: 600;
@@ -375,7 +375,7 @@ function sb_icon(string $name): string {
         transition: opacity var(--transition);
     }
 
-    /* ─── NAV ─── */
+    /* â”€â”€â”€ NAV â”€â”€â”€ */
     .sb-nav {
         flex: 1;
         overflow-y: auto;
@@ -445,7 +445,7 @@ function sb_icon(string $name): string {
         flex: 1;
     }
 
-    /* ─── FOOTER ─── */
+    /* â”€â”€â”€ FOOTER â”€â”€â”€ */
     .sb-footer {
         border-top: 1px solid rgba(255,255,255,.07);
         padding: 10px 0 12px;
@@ -500,7 +500,7 @@ function sb_icon(string $name): string {
         white-space: nowrap;
     }
 
-    /* ─── COLLAPSED ─── */
+    /* â”€â”€â”€ COLLAPSED â”€â”€â”€ */
     body.admin-sidebar-collapsed .admin-sidebar { width: var(--sb-w-col); }
 
     body.admin-sidebar-collapsed .sb-brand-text,
@@ -551,9 +551,9 @@ function sb_icon(string $name): string {
     }
     body.admin-sidebar-collapsed .sb-link:hover[data-tooltip]::after { opacity: 1; }
 
-    /* ═══════════════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        MAIN CONTENT AREA
-    ═══════════════════════════════════════════════════════════ */
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .admin-main {
         flex: 1;
         min-width: 0;
@@ -561,9 +561,9 @@ function sb_icon(string $name): string {
         flex-direction: column;
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       TOPBAR — sticky, warm bg, same as opp-toolbar
-    ═══════════════════════════════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       TOPBAR â€” sticky, warm bg, same as opp-toolbar
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .admin-topbar {
         position: sticky;
         top: 0;
@@ -587,7 +587,7 @@ function sb_icon(string $name): string {
         min-width: 0;
     }
 
-    /* mobile toggle — same style as opp filter-toggle */
+    /* mobile toggle â€” same style as opp filter-toggle */
     .sidebar-toggle {
         width: 34px; height: 34px;
         border: 1.5px solid var(--rule);
@@ -644,7 +644,7 @@ function sb_icon(string $name): string {
         flex-shrink: 0;
     }
 
-    /* admin chip — same styling as hero-eyebrow */
+    /* admin chip â€” same styling as hero-eyebrow */
     .topbar-chip {
         display: inline-flex;
         align-items: center;
@@ -668,7 +668,7 @@ function sb_icon(string $name): string {
         flex-shrink: 0;
     }
 
-    /* logout link — matches btn-ghost */
+    /* logout link â€” matches btn-ghost */
     .topbar-logout {
         display: inline-flex;
         align-items: center;
@@ -691,17 +691,17 @@ function sb_icon(string $name): string {
     }
     .topbar-logout svg { width: 12px; height: 12px; }
 
-    /* ═══════════════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        CONTENT WRAPPER
-    ═══════════════════════════════════════════════════════════ */
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .admin-content {
         padding: 2rem 1.75rem;
         flex: 1;
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       BOOTSTRAP OVERRIDES — reskinned to match design system
-    ═══════════════════════════════════════════════════════════ */
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+       BOOTSTRAP OVERRIDES â€” reskinned to match design system
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .card {
         background: #fff;
         border: 1px solid var(--rule-light);
@@ -768,7 +768,7 @@ function sb_icon(string $name): string {
         margin-bottom: .45rem;
     }
 
-    /* btn-primary → ink dark */
+    /* btn-primary â†’ ink dark */
     .btn-primary {
         background: var(--ink);
         border: none;
@@ -788,7 +788,7 @@ function sb_icon(string $name): string {
     }
     .btn-primary:active { transform: scale(.98); }
 
-    /* btn-secondary → ghost */
+    /* btn-secondary â†’ ghost */
     .btn-secondary, .btn-outline-secondary {
         background: transparent;
         border: 1.5px solid var(--rule);
@@ -853,9 +853,9 @@ function sb_icon(string $name): string {
     .badge.bg-primary { background: var(--accent-dim)!important; color: var(--accent); }
     .badge.bg-secondary { background: var(--bg-warm) !important; color: var(--ink-light); border: 1px solid var(--rule); }
 
-    /* ═══════════════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        BACKDROP (mobile)
-    ═══════════════════════════════════════════════════════════ */
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     .admin-backdrop {
         position: fixed;
         inset: 0;
@@ -867,9 +867,9 @@ function sb_icon(string $name): string {
         backdrop-filter: blur(2px);
     }
 
-    /* ═══════════════════════════════════════════════════════════
+    /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        RESPONSIVE
-    ═══════════════════════════════════════════════════════════ */
+    â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
     @media (max-width: 992px) {
         .admin-sidebar {
             position: fixed;
@@ -909,7 +909,7 @@ function sb_icon(string $name): string {
         .topbar-chip .chip-label { display: none; }
     }
 
-    /* ── GLOBAL ADMIN RESPONSIVE HELPERS ── */
+    /* â”€â”€ GLOBAL ADMIN RESPONSIVE HELPERS â”€â”€ */
     .admin-content img,
     .admin-content video,
     .admin-content canvas {
@@ -940,7 +940,7 @@ function sb_icon(string $name): string {
 
 <div class="admin-app">
 
-    <!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• SIDEBAR â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <aside class="admin-sidebar" id="adminSidebar" role="navigation" aria-label="Admin navigation">
         <div class="sb-inner">
 
@@ -1003,7 +1003,7 @@ function sb_icon(string $name): string {
         </div>
     </aside>
 
-    <!-- ═══════════════════ MAIN ═══════════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MAIN â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <div class="admin-main">
 
         <!-- Topbar -->
@@ -1024,7 +1024,7 @@ function sb_icon(string $name): string {
             <div class="topbar-right">
                 <div class="topbar-chip">
                     <span class="chip-dot"></span>
-                    <span class="chip-label"><?php echo htmlspecialchars($admin_name . ' · ' . $admin_role_label); ?></span>
+                    <span class="chip-label"><?php echo htmlspecialchars($admin_name . ' Â· ' . $admin_role_label); ?></span>
                 </div>
                 <a href="<?php echo htmlspecialchars($logout_url); ?>" class="topbar-logout">
                     <svg viewBox="0 0 24 24" fill="currentColor">
@@ -1037,4 +1037,5 @@ function sb_icon(string $name): string {
 
         <!-- Page content injected here -->
         <main class="admin-content">
+
 

@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 
 if (empty($_SESSION['admin'])) {
@@ -13,6 +14,8 @@ if (($_SESSION['admin_role'] ?? '') !== 'super_admin') {
 }
 
 include '../shared/db_connect.php';
+require_once dirname(__DIR__) . '/shared/admin_auth.php';
+require_admin_access($conn, 'super_admin');
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id) {
@@ -25,3 +28,4 @@ if ($id) {
 header('Location: post_management.php');
 exit();
 ?>
+

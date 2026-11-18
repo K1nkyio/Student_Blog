@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$page_title = 'Register — ' . SITE_NAME;
+$page_title = 'Register â€” ' . SITE_NAME;
 include '../shared/header.php';
 ?>
 
@@ -61,9 +62,9 @@ include '../shared/header.php';
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
-   DESIGN TOKENS — exact mirror of opportunities.php
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   DESIGN TOKENS â€” exact mirror of opportunities.php
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -100,18 +101,18 @@ body {
   min-height: 100vh;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    FULL-VIEWPORT SPLIT
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .auth-shell {
   min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
 
-/* ═══════════════════════════════════════════
-   LEFT — DARK EDITORIAL PANEL
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   LEFT â€” DARK EDITORIAL PANEL
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .auth-visual-side {
   background: var(--ink);
   color: #fff;
@@ -216,7 +217,7 @@ body {
   margin-bottom: 2.25rem;
 }
 
-/* perks — with green check icons */
+/* perks â€” with green check icons */
 .visual-perks {
   display: flex;
   flex-direction: column;
@@ -286,9 +287,9 @@ body {
 }
 .visual-switch a:hover { color: #fff; border-bottom-color: rgba(255,255,255,.5); }
 
-/* ═══════════════════════════════════════════
-   RIGHT — FORM SIDE
-═══════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   RIGHT â€” FORM SIDE
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .auth-form-side {
   background: var(--bg);
   display: flex;
@@ -321,7 +322,7 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── form eyebrow ── */
+/* â”€â”€ form eyebrow â”€â”€ */
 .form-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -337,7 +338,7 @@ body {
   margin-bottom: .9rem;
 }
 
-/* ── form heading ── */
+/* â”€â”€ form heading â”€â”€ */
 .form-heading {
   margin-bottom: 1.75rem;
 }
@@ -361,7 +362,7 @@ body {
   line-height: 1.65;
 }
 
-/* ── alert ── */
+/* â”€â”€ alert â”€â”€ */
 .auth-alert {
   display: flex;
   align-items: flex-start;
@@ -376,7 +377,7 @@ body {
 .auth-alert.error   { background: var(--red-dim);   color: var(--red);   border: 1px solid rgba(176,48,48,.18); }
 .auth-alert.success { background: var(--green-dim); color: var(--green); border: 1px solid rgba(26,122,74,.18); }
 
-/* ── field groups ── */
+/* â”€â”€ field groups â”€â”€ */
 .form-group { margin-bottom: 1.1rem; }
 
 .form-label {
@@ -446,7 +447,7 @@ body {
 .toggle-pw:hover { color: var(--ink); background: var(--bg-warm); border-color: var(--ink-mid); }
 .toggle-pw svg { width: 13px; height: 13px; }
 
-/* ── password strength meter ── */
+/* â”€â”€ password strength meter â”€â”€ */
 .pw-meter { margin-top: .5rem; }
 .pw-bars {
   display: flex;
@@ -484,14 +485,14 @@ body {
 .field-hint.match   { color: var(--green); }
 .field-hint.mismatch { color: var(--red); }
 
-/* ── divider ── */
+/* â”€â”€ divider â”€â”€ */
 .form-divider {
   height: 1px;
   background: var(--rule-light);
   margin: 1.5rem 0;
 }
 
-/* ── submit button ── */
+/* â”€â”€ submit button â”€â”€ */
 .btn-submit {
   width: 100%;
   display: flex;
@@ -525,7 +526,7 @@ body {
 }
 .btn-submit svg { width: 14px; height: 14px; }
 
-/* ── form footer ── */
+/* â”€â”€ form footer â”€â”€ */
 .form-foot {
   margin-top: 1.35rem;
   text-align: center;
@@ -540,9 +541,9 @@ body {
 }
 .form-foot a:hover { color: var(--ink); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 @media (max-width: 840px) {
   .auth-shell { grid-template-columns: 1fr; }
   .auth-visual-side {
@@ -563,7 +564,7 @@ body {
 
 <div class="auth-shell">
 
-  <!-- ══════ LEFT: DARK EDITORIAL PANEL ══════ -->
+  <!-- â•â•â•â•â•â• LEFT: DARK EDITORIAL PANEL â•â•â•â•â•â• -->
   <div class="auth-visual-side">
     <div class="visual-top">
       <div class="visual-brand">
@@ -602,12 +603,12 @@ body {
     <div class="visual-bot">
       <div class="visual-rule"></div>
       <p class="visual-switch">
-        Already have an account? <a href="login.php">Sign in →</a>
+        Already have an account? <a href="login.php">Sign in â†’</a>
       </p>
     </div>
   </div>
 
-  <!-- ══════ RIGHT: FORM ══════ -->
+  <!-- â•â•â•â•â•â• RIGHT: FORM â•â•â•â•â•â• -->
   <div class="auth-form-side">
     <div class="form-wrap">
 
@@ -720,7 +721,7 @@ body {
           </svg>
         </button>
 
-        <p class="form-foot">Already have an account? <a href="login.php">Sign in →</a></p>
+        <p class="form-foot">Already have an account? <a href="login.php">Sign in â†’</a></p>
       </form>
 
     </div>
@@ -730,7 +731,7 @@ body {
 
 <script>
 (function () {
-  /* ── Password toggle helper ── */
+  /* â”€â”€ Password toggle helper â”€â”€ */
   function bindToggle(btnId, inputId, iconId) {
     const btn = document.getElementById(btnId);
     const inp = document.getElementById(inputId);
@@ -749,7 +750,7 @@ body {
   bindToggle('togglePw1', 'password', 'eyeIcon1');
   bindToggle('togglePw2', 'password_confirm', 'eyeIcon2');
 
-  /* ── Password strength ── */
+  /* â”€â”€ Password strength â”€â”€ */
   const pwInput = document.getElementById('password');
   const bars    = ['bar1','bar2','bar3','bar4'].map(id => document.getElementById(id));
   const pwLabel = document.getElementById('pwLabel');
@@ -772,7 +773,7 @@ body {
     pwLabel.textContent = text;
   });
 
-  /* ── Confirm match ── */
+  /* â”€â”€ Confirm match â”€â”€ */
   const confirmInput = document.getElementById('password_confirm');
   const matchHint    = document.getElementById('matchHint');
 
@@ -784,18 +785,18 @@ body {
       return;
     }
     const match = this.value === pwInput?.value;
-    matchHint.textContent = match ? '✓ Passwords match' : '✗ Passwords do not match';
+    matchHint.textContent = match ? 'âœ“ Passwords match' : 'âœ— Passwords do not match';
     matchHint.className   = 'field-hint ' + (match ? 'match' : 'mismatch');
     this.classList.toggle('valid',   match);
     this.classList.toggle('invalid', !match);
   });
 
-  /* ── Submit loading state ── */
+  /* â”€â”€ Submit loading state â”€â”€ */
   document.getElementById('registerForm')?.addEventListener('submit', function () {
     const btn = document.getElementById('submitBtn');
     if (btn) {
       btn.disabled = true;
-      btn.innerHTML = '<svg style="animation:spin .7s linear infinite" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/></svg> Creating…';
+      btn.innerHTML = '<svg style="animation:spin .7s linear infinite" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-9-9"/></svg> Creatingâ€¦';
     }
   });
 

@@ -4,7 +4,8 @@
  * Displays all categories with post counts and statistics
  */
 
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -884,3 +885,4 @@ $categories_stmt->close();
 $conn->close();
 include '../shared/footer.php';
 ?>
+

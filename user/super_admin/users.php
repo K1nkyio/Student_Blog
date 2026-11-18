@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 }
 
 if (empty($_SESSION['admin'])) {
@@ -482,7 +483,7 @@ $active_tab = 'users';
               $is_current = (int)($admin['id'] ?? 0) === $current_admin_id;
               $is_last_super = $role === 'super_admin' && $super_admin_count <= 1;
               $disable_role = $is_last_super && !$is_current;
-              $last_login = !empty($admin['last_login_at']) ? date('M d, Y H:i', strtotime($admin['last_login_at'])) : '—';
+              $last_login = !empty($admin['last_login_at']) ? date('M d, Y H:i', strtotime($admin['last_login_at'])) : 'â€”';
             ?>
             <tr>
               <td>
@@ -556,3 +557,4 @@ $active_tab = 'users';
 </div>
 
 <?php include '../admin/includes/footer.php'; ?>
+

@@ -1,5 +1,6 @@
-﻿<?php
-session_start();
+<?php
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -572,28 +573,30 @@ include '../shared/header.php';
 ═══════════════════════════════════════════ */
 .posts-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  grid-template-columns: minmax(250px, .9fr) repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(145px, 1fr));
+  gap: .9rem;
 }
 
 /* Hero post — spans left */
 .post-hero {
+  grid-column: 1;
   grid-row: span 3;
   position: relative;
-  border-radius: 6px;
+  border-radius: 12px;
   overflow: hidden;
-  min-height: 480px;
+  min-height: 470px;
   text-decoration: none;
   color: #fff;
   display: flex;
   flex-direction: column;
   background: var(--ink);
-  box-shadow: 0 1px 4px rgba(24,22,15,.07), 0 8px 24px rgba(24,22,15,.09);
-  transition: box-shadow var(--transition), transform var(--transition);
+  box-shadow: 0 8px 22px rgba(24,22,15,.11), 0 22px 50px rgba(24,22,15,.1);
+  transition: box-shadow var(--transition), transform var(--transition), border-radius var(--transition);
 }
 .post-hero:hover {
-  box-shadow: 0 4px 16px rgba(24,22,15,.12), 0 16px 40px rgba(24,22,15,.1);
-  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(24,22,15,.16), 0 30px 60px rgba(24,22,15,.13);
+  transform: translateY(-4px);
 }
 .post-hero img {
   position: absolute; inset: 0;
@@ -606,11 +609,24 @@ include '../shared/header.php';
 
 .post-hero-overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(24,22,15,.96) 0%, rgba(24,22,15,.52) 42%, rgba(24,22,15,.08) 100%);
+  background: linear-gradient(180deg, rgba(24,22,15,.04) 14%, rgba(24,22,15,.18) 42%, rgba(24,22,15,.94) 100%);
+}
+.post-hero::after {
+  content: '01';
+  position: absolute;
+  top: .7rem;
+  right: 1rem;
+  color: rgba(255,255,255,.78);
+  font-family: var(--font-serif);
+  font-size: 2.6rem;
+  font-style: italic;
+  line-height: 1;
+  text-shadow: 0 2px 18px rgba(0,0,0,.25);
+  pointer-events: none;
 }
 .post-hero-body {
   position: absolute; bottom: 0; left: 0; right: 0;
-  padding: 1.75rem;
+  padding: 1.5rem;
   display: flex; flex-direction: column; gap: .6rem;
 }
 
@@ -630,7 +646,7 @@ include '../shared/header.php';
 
 .post-hero-title {
   font-family: var(--font-serif);
-  font-size: clamp(1.2rem, 2.5vw, 1.65rem);
+  font-size: clamp(1.35rem, 2.3vw, 1.85rem);
   font-weight: 700;
   line-height: 1.18;
   color: #fff;
@@ -657,34 +673,65 @@ include '../shared/header.php';
 
 /* Small cards */
 .post-card {
-  background: #fff;
-  border: 1px solid var(--rule-light);
-  border-radius: 6px;
-  padding: 1.1rem;
-  display: flex;
-  flex-direction: column;
-  gap: .4rem;
+  background: linear-gradient(145deg, #fff 0%, #fcfaf7 100%);
+  border: 1px solid #e9e1d6;
+  border-radius: 10px;
+  padding: 0;
+  display: grid;
+  grid-template-rows: 78px auto 1fr auto;
+  gap: 0;
   text-decoration: none;
   color: var(--ink);
-  box-shadow: 0 1px 3px rgba(24,22,15,.04), 0 4px 12px rgba(24,22,15,.04);
-  transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition);
+  box-shadow: 0 4px 12px rgba(24,22,15,.035), 0 12px 28px rgba(24,22,15,.04);
+  transition: box-shadow var(--transition), transform var(--transition), border-color var(--transition), background var(--transition);
   animation: cardIn .38s ease both;
   position: relative;
   overflow: hidden;
   min-width: 0;
 }
 .post-card:hover {
-  border-color: var(--rule);
-  box-shadow: 0 2px 8px rgba(24,22,15,.07), 0 8px 24px rgba(24,22,15,.07);
-  transform: translateY(-2px);
+  border-color: #d6ad87;
+  background: #fff;
+  box-shadow: 0 10px 22px rgba(24,22,15,.08), 0 18px 38px rgba(24,22,15,.08);
+  transform: translateY(-3px);
 }
-/* accent bar */
+.post-card-media {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 82% 20%, rgba(255,255,255,.55) 0 2px, transparent 3px),
+              linear-gradient(125deg, #d8b596 0%, #a85d3d 54%, #49352f 100%);
+}
+.post-card:nth-child(3n) .post-card-media { background: linear-gradient(125deg, #bbd0c2, #588078 55%, #253d3a); }
+.post-card:nth-child(3n + 1) .post-card-media { background: linear-gradient(125deg, #e1c589, #b17d38 55%, #5b432b); }
+.post-card-media::after {
+  content: '';
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  right: -24px;
+  top: -52px;
+  border: 1px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  box-shadow: 0 0 0 12px rgba(255,255,255,.08), 0 0 0 24px rgba(255,255,255,.06);
+  pointer-events: none;
+}
+.post-card-media img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .5s ease; }
+.post-card:hover .post-card-media img { transform: scale(1.06); }
+.post-card-index {
+  position: absolute;
+  left: .75rem;
+  bottom: .55rem;
+  color: rgba(255,255,255,.84);
+  font: italic 1.35rem/1 var(--font-serif);
+  text-shadow: 0 2px 10px rgba(0,0,0,.2);
+}
+/* warm editorial accent */
 .post-card::before {
   content: '';
   position: absolute;
-  left: 0; top: 8px; bottom: 8px;
-  width: 3px;
-  border-radius: 0 2px 2px 0;
+  left: 0; right: 0; bottom: 0;
+  height: 3px;
+  border-radius: 0 0 10px 10px;
   background: var(--accent);
   opacity: 0;
   transition: opacity var(--transition);
@@ -697,6 +744,7 @@ include '../shared/header.php';
 }
 
 .post-card-cat {
+  margin: .6rem .8rem .25rem;
   font-size: .58rem;
   font-weight: 700;
   letter-spacing: .08em;
@@ -709,17 +757,19 @@ include '../shared/header.php';
 }
 .post-card-title {
   font-family: var(--font-serif);
-  font-size: .95rem;
+  margin: 0 .8rem;
+  font-size: .9rem;
   font-weight: 700;
   line-height: 1.35;
   color: var(--ink);
   flex: 1;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 .post-card-excerpt {
+  margin: .25rem .8rem .45rem;
   font-size: .75rem;
   color: var(--ink-light);
   line-height: 1.5;
@@ -733,9 +783,9 @@ include '../shared/header.php';
   gap: .85rem;
   font-size: .7rem;
   color: var(--ink-light);
-  border-top: 1px solid var(--rule-light);
-  padding-top: .5rem;
-  margin-top: auto;
+  border-top: 1px solid #eee8df;
+  padding: .45rem 0 0;
+  margin: auto .8rem .65rem;
   align-items: center;
 }
 .post-card-foot .meta-item { display: inline-flex; align-items: center; gap: .28rem; }
@@ -1115,9 +1165,177 @@ include '../shared/header.php';
   .opp-cta { display: none; }
 }
 
+
+
 @media (max-width: 540px) {
   .market-grid { grid-template-columns: repeat(2, 1fr); gap: .75rem; }
   .feature-strip-inner { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Community / Featured Posts section intro */
+.community-intro {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 168px;
+  margin: 0 0 1.2rem;
+  padding: clamp(1.25rem, 3vw, 2rem) clamp(1.3rem, 3.4vw, 2.35rem);
+  border: 1px solid #e7ded1;
+  border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  background: linear-gradient(112deg, #fffdfa 0%, #f7f0e7 67%, #efe2d2 100%);
+  box-shadow: 0 8px 24px rgba(24,22,15,.045), inset 0 1px 0 rgba(255,255,255,.9);
+}
+.community-intro::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: -112px;
+  right: 12%;
+  width: 285px;
+  height: 285px;
+  border: 1px solid rgba(176,116,70,.18);
+  border-radius: 50%;
+  box-shadow: 0 0 0 18px rgba(176,116,70,.045), 0 0 0 38px rgba(176,116,70,.035);
+  pointer-events: none;
+}
+.community-intro-copy { position: relative; max-width: 620px; }
+.community-intro-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: .42rem;
+  margin-bottom: .38rem;
+  color: #98623d;
+  font-size: .61rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+.community-intro-kicker span { color: var(--accent); font-size: .9rem; line-height: 1; }
+.community-intro h2 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -.04em;
+  line-height: .98;
+}
+.community-intro h2 em { color: var(--accent); font-weight: 400; }
+.community-intro p { margin: .55rem 0 0; color: var(--ink-light); font-size: .82rem; line-height: 1.5; }
+.community-intro-actions { display: flex; align-items: center; gap: .85rem; flex-shrink: 0; }
+.community-intro-count { display: grid; justify-items: center; min-width: 58px; padding-right: .9rem; border-right: 1px solid #ddcdbb; }
+.community-intro-count strong { color: var(--ink); font: 600 1.55rem/1 var(--font-serif); }
+.community-intro-count span { margin-top: .17rem; color: #81766b; font-size: .55rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.community-intro-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .72rem .9rem;
+  border: 1px solid var(--ink);
+  border-radius: 5px;
+  background: var(--ink);
+  color: #fff;
+  font-size: .7rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform var(--transition), background var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+.community-intro-link:hover { transform: translateY(-2px); border-color: #8e4e2d; background: #8e4e2d; box-shadow: 0 7px 16px rgba(142,78,45,.2); }
+.community-intro-link svg { width: 14px; height: 14px; transition: transform var(--transition); }
+.community-intro-link:hover svg { transform: translateX(3px); }
+
+/* Responsive editorial cards for homepage previews */
+.posts-grid {
+  grid-template-columns: minmax(245px, .9fr) repeat(2, minmax(0, 1fr));
+  grid-template-rows: none;
+  grid-auto-rows: minmax(145px, 1fr);
+  gap: .9rem;
+}
+.post-hero { grid-column: 1; border-radius: 12px; }
+.post-hero-body { padding: clamp(1.1rem, 2vw, 1.55rem); }
+.post-hero-foot { flex-wrap: wrap; }
+.post-card { grid-template-rows: 78px auto 1fr auto; border-radius: 10px; }
+.post-card-media {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 82% 20%, rgba(255,255,255,.5) 0 2px, transparent 3px), linear-gradient(125deg, #d8b596, #a85d3d 54%, #49352f);
+}
+.post-card:nth-child(3n) .post-card-media { background: linear-gradient(125deg, #bbd0c2, #588078 55%, #253d3a); }
+.post-card:nth-child(3n + 1) .post-card-media { background: linear-gradient(125deg, #e1c589, #b17d38 55%, #5b432b); }
+.post-card-media::after {
+  content: '';
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  right: -24px;
+  top: -52px;
+  border: 1px solid rgba(255,255,255,.34);
+  border-radius: 50%;
+  box-shadow: 0 0 0 12px rgba(255,255,255,.08), 0 0 0 24px rgba(255,255,255,.06);
+  pointer-events: none;
+}
+.post-card-media img { position: relative; z-index: 1; width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .5s ease; }
+.post-card:hover .post-card-media img { transform: scale(1.06); }
+.post-card-index { position: absolute; z-index: 2; left: .75rem; bottom: .55rem; color: #fff; font: italic 1.35rem/1 var(--font-serif); text-shadow: 0 2px 10px rgba(0,0,0,.35); }
+.post-card { padding: 0; gap: 0; background: linear-gradient(145deg, #fff, #fcfaf7); border-color: #e9e1d6; box-shadow: 0 4px 12px rgba(24,22,15,.035), 0 12px 28px rgba(24,22,15,.04); }
+.post-card:hover { border-color: #d6ad87; background: #fff; box-shadow: 0 10px 22px rgba(24,22,15,.08), 0 18px 38px rgba(24,22,15,.08); transform: translateY(-3px); }
+.post-card::before { left: 0; right: 0; top: auto; bottom: 0; width: auto; height: 3px; border-radius: 0 0 10px 10px; }
+.post-card-cat { margin: .6rem .8rem .25rem; }
+.post-card-title { margin: 0 .8rem; font-size: .9rem; -webkit-line-clamp: 2; }
+.post-card-excerpt { margin: .25rem .8rem .45rem; }
+.post-card-foot { margin: auto .8rem .65rem; padding: .45rem 0 0; border-top-color: #eee8df; }
+
+.events-preview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; padding: .65rem; background: #f8f6f2; }
+.ev-item { min-width: 0; min-height: 132px; padding: .7rem; border: 1px solid #e9e2d8; border-radius: 7px; background: #fff; display: flex; flex-direction: column; align-items: flex-start; box-shadow: 0 2px 7px rgba(24,22,15,.035); transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition); }
+.ev-item:hover { transform: translateY(-2px); border-color: #c9a27c; box-shadow: 0 8px 16px rgba(24,22,15,.08); background: #fff; }
+.ev-item-top { width: 100%; display: flex; justify-content: space-between; align-items: flex-start; gap: .4rem; }
+.ev-type { margin: .05rem 0 0; }
+.ev-date { display: grid; justify-items: center; min-width: 34px; padding: .2rem .3rem; border: 1px solid #eadbc9; border-radius: 4px; background: #fbf5ed; line-height: 1; }
+.ev-date span { color: var(--accent); font-size: .48rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.ev-date strong { margin-top: .12rem; color: var(--ink); font: 600 1.05rem/1 var(--font-serif); }
+.ev-title { width: 100%; margin: .5rem 0 .45rem; font: 700 .86rem/1.3 var(--font-serif); }
+.ev-meta { gap: .25rem .5rem; margin-top: auto; font-size: .62rem; }
+.ev-meta-item { min-width: 0; max-width: 100%; }
+.ev-meta-item svg { width: 9px; height: 9px; flex: 0 0 auto; }
+.ev-meta-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.opp-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; }
+.opp-row { display: flex !important; flex-direction: column; align-items: flex-start; gap: .55rem; min-height: 235px; padding: 1.1rem; border-radius: 10px; background: linear-gradient(150deg, #fff, #fbf9f5); box-shadow: 0 3px 10px rgba(24,22,15,.035), 0 12px 26px rgba(24,22,15,.035); }
+.opp-row:hover { border-color: #c9a27c; box-shadow: 0 10px 22px rgba(24,22,15,.08), 0 18px 34px rgba(24,22,15,.07); transform: translateY(-3px); }
+.opp-row::before { left: 1.1rem; right: 1.1rem; top: 0; bottom: auto; width: auto; height: 3px; border-radius: 0 0 3px 3px; }
+.opp-icon { width: 44px; height: 44px; margin: .15rem 0 .15rem; border-radius: 11px; }
+.opp-body { display: flex; flex: 1 1 auto; flex-direction: column; width: 100%; }
+.opp-title { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.opp-meta { display: grid; gap: .3rem; font-size: .68rem; }
+.opp-meta-item { min-width: 0; overflow-wrap: anywhere; }
+.opp-cta { display: inline-flex !important; margin-top: auto; padding: .38rem .68rem; border-radius: 5px; font-size: .7rem; }
+
+@media (max-width: 900px) {
+  .posts-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; grid-auto-rows: minmax(175px, auto); }
+  .post-hero { grid-column: 1 / -1; grid-row: auto !important; min-height: 390px; }
+  .opp-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .community-intro { align-items: flex-start; flex-direction: column; gap: 1rem; }
+  .community-intro-actions { width: 100%; justify-content: flex-start; }
+  .posts-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
+  .post-hero { grid-column: 1; min-height: 360px; }
+  .post-card { grid-template-columns: 96px minmax(0, 1fr); grid-template-rows: auto; min-height: 150px; }
+  .post-card-media { grid-column: 1; grid-row: 1 / span 4; min-height: 150px; }
+  .post-card-cat { align-self: start; margin-top: .7rem; }
+  .post-card-title { align-self: start; }
+  .post-card-excerpt { align-self: start; }
+  .post-card-foot { align-self: end; width: calc(100% - 1.6rem); }
+  .opp-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 380px) {
+  .events-preview-grid { grid-template-columns: 1fr; }
 }
 </style>
 
@@ -1296,17 +1514,23 @@ include '../shared/header.php';
   <div class="home-body">
 
     <!-- ── Featured Posts ── -->
-    <div class="sec-header sec-header--first">
-      <div>
-        <div class="sec-kicker">Community</div>
-        <div class="sec-title">Featured Posts</div>
-        <div class="sec-sub">Fresh stories and insights from your campus.</div>
+    <header class="community-intro" aria-labelledby="community-posts-title">
+      <div class="community-intro-copy">
+        <div class="community-intro-kicker"><span aria-hidden="true">✳</span> Community</div>
+        <h2 id="community-posts-title">Featured <em>Posts</em></h2>
+        <p>Fresh stories and insights from your campus.</p>
       </div>
-      <a class="sec-all" href="explore.php">
-        View all
-        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </a>
-    </div>
+      <div class="community-intro-actions">
+        <div class="community-intro-count" aria-label="<?php echo count($featured_posts); ?> featured stories">
+          <strong><?php echo count($featured_posts); ?></strong>
+          <span>Stories</span>
+        </div>
+        <a class="community-intro-link" href="explore.php">
+          Explore posts
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </header>
 
     <?php if (!empty($featured_posts)): ?>
     <div class="posts-grid">
@@ -1316,7 +1540,7 @@ include '../shared/header.php';
         $main_url = !empty($main['slug']) ? "post.php?slug=" . urlencode($main['slug']) : "post.php?id=" . $main['id'];
         $main_exc = $main['excerpt'] ?: substr(strip_tags($main['content'] ?? ''), 0, 200) . '…';
       ?>
-      <a class="post-hero" href="<?php echo htmlspecialchars($main_url); ?>" style="grid-row:span <?php echo min(count($featured_posts) - 1, 3); ?>">
+      <a class="post-hero" href="<?php echo htmlspecialchars($main_url); ?>" style="grid-row:span <?php echo max(1, min(count($featured_posts) - 1, 3)); ?>">
         <?php if (!empty($main['image'])): ?>
           <img src="<?php echo htmlspecialchars(get_post_image_url($main['image'])); ?>"
                alt="<?php echo htmlspecialchars($main['title']); ?>"
@@ -1348,6 +1572,12 @@ include '../shared/header.php';
       ?>
       <a class="post-card" href="<?php echo htmlspecialchars($purl); ?>"
          style="animation-delay:<?php echo ($i * .05 + .08); ?>s">
+        <div class="post-card-media">
+          <?php if (!empty($post['image'])): ?>
+            <img src="<?php echo htmlspecialchars(get_post_image_url($post['image'])); ?>" alt="" loading="lazy">
+          <?php endif; ?>
+          <span class="post-card-index"><?php echo str_pad($i + 2, 2, '0', STR_PAD_LEFT); ?></span>
+        </div>
         <?php if (!empty($post['category_name'])): ?>
           <span class="post-card-cat"><?php echo htmlspecialchars($post['category_name']); ?></span>
         <?php endif; ?>
@@ -1373,6 +1603,7 @@ include '../shared/header.php';
       <p>No posts yet — check back soon.</p>
     </div>
     <?php endif; ?>
+
 
     <!-- ── Trending + Events ── -->
     <div class="two-col">
@@ -1420,7 +1651,9 @@ include '../shared/header.php';
           <a class="panel-viewall" href="events.php">See all →</a>
         </div>
 
-        <?php if (!empty($events)): foreach ($events as $ev):
+        <?php if (!empty($events)): ?>
+        <div class="events-preview-grid">
+        <?php foreach ($events as $ev):
           $tl = strtolower($ev['title'] ?? '');
           if (strpos($tl,'workshop')!==false) $evType='Workshop';
           elseif (strpos($tl,'hack')!==false) $evType='Hackathon';
@@ -1428,21 +1661,25 @@ include '../shared/header.php';
           elseif (strpos($tl,'social')!==false) $evType='Social';
           else $evType='Event';
         ?>
-        <a class="ev-item" href="events.php">
-          <span class="ev-type"><?php echo htmlspecialchars($evType); ?></span>
+        <a class="ev-item" href="event.php?id=<?php echo (int)$ev['id']; ?>">
+          <div class="ev-item-top">
+            <span class="ev-type"><?php echo htmlspecialchars($evType); ?></span>
+            <span class="ev-date">
+              <span><?php echo !empty($ev['event_date']) ? htmlspecialchars(date('M', strtotime($ev['event_date']))) : 'Date'; ?></span>
+              <strong><?php echo !empty($ev['event_date']) ? htmlspecialchars(date('d', strtotime($ev['event_date']))) : 'TBA'; ?></strong>
+            </span>
+          </div>
           <div class="ev-title"><?php echo htmlspecialchars($ev['title']); ?></div>
           <div class="ev-meta">
             <span class="ev-meta-item">
-              <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 16 16"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M5 1.5v3M11 1.5v3M2 7h12" stroke-linecap="round"/></svg>
-              <?php echo htmlspecialchars($ev['event_date'] ? date('M d, Y', strtotime($ev['event_date'])) : 'TBA'); ?>
-            </span>
-            <span class="ev-meta-item">
               <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 16 16"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5S12.5 9.5 12.5 6c0-2.5-2-4.5-4.5-4.5z"/><circle cx="8" cy="6" r="1.5" fill="currentColor" stroke="none"/></svg>
-              <?php echo htmlspecialchars($ev['location'] ?: 'Campus'); ?>
+              <span><?php echo htmlspecialchars($ev['location'] ?: 'Campus'); ?></span>
             </span>
           </div>
         </a>
-        <?php endforeach; else: ?>
+        <?php endforeach; ?>
+        </div>
+        <?php else: ?>
         <p style="padding:1.5rem 1.35rem;font-size:.845rem;color:var(--ink-light)">No upcoming events right now.</p>
         <?php endif; ?>
       </div>
@@ -1520,7 +1757,7 @@ include '../shared/header.php';
     </div>
 
     <?php if ($opportunities && $opportunities->num_rows > 0): ?>
-    <div class="opp-list">
+    <div class="opp-grid">
       <?php $oi = 0; while ($opp = $opportunities->fetch_assoc()):
         $typeKey = strtolower(trim($opp['type'] ?? '')) ?: 'other';
         $icons   = ['internship'=>'🏢','job'=>'💼','scholarship'=>'🏆','attachment'=>'📋','other'=>'🔗'];

@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -94,9 +95,9 @@ include '../shared/header.php';
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    DESIGN TOKENS
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 :root {
   --bg:           #f5f2ed;
   --bg-warm:      #ede9e1;
@@ -138,9 +139,9 @@ include '../shared/header.php';
   padding-bottom: 6rem;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HERO
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .comments-hero {
   background: var(--ink);
   color: #fff;
@@ -236,9 +237,9 @@ include '../shared/header.php';
   margin-top: .25rem;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    TOOLBAR
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .comments-toolbar {
   border-bottom: 1px solid var(--rule);
   background: var(--bg);
@@ -262,9 +263,9 @@ include '../shared/header.php';
 }
 .toolbar-meta strong { color: var(--ink-mid); font-weight: 600; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    BODY
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .comments-body {
   max-width: var(--max-w);
   margin: 0 auto;
@@ -284,9 +285,9 @@ include '../shared/header.php';
 .flash-msg.success { background: var(--green-dim); color: var(--green); border-color: var(--green); }
 .flash-msg.error   { background: var(--red-dim);   color: var(--red);   border-color: var(--red); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    COMMENT ROWS
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .comments-list {
   display: flex;
   flex-direction: column;
@@ -437,9 +438,9 @@ include '../shared/header.php';
 }
 .btn-ghost:hover { border-color: var(--ink-mid); background: var(--bg-warm); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    EMPTY STATE
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .comments-empty {
   text-align: center;
   padding: 5rem 1rem;
@@ -450,9 +451,9 @@ include '../shared/header.php';
 .comments-empty h3 { font-family: var(--font-serif); font-size: 1.3rem; color: var(--ink-mid); margin-bottom: .4rem; }
 .comments-empty p  { font-size: .875rem; margin-bottom: 1.5rem; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    PAGINATION
-═══════════════════════════════════════════ */
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .comments-pagination {
   display: flex;
   align-items: center;
@@ -505,7 +506,7 @@ include '../shared/header.php';
 
 <div class="comments-page">
 
-  <!-- ══════════ HERO ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• HERO â•â•â•â•â•â•â•â•â•â• -->
   <div class="comments-hero">
     <div class="hero-inner">
       <span class="hero-eyebrow">Your activity</span>
@@ -528,12 +529,12 @@ include '../shared/header.php';
     </div>
   </div>
 
-  <!-- ══════════ TOOLBAR ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• TOOLBAR â•â•â•â•â•â•â•â•â•â• -->
   <div class="comments-toolbar">
     <div class="comments-toolbar-inner">
       <span class="toolbar-meta">
         <strong><?= $total_comments ?></strong> comment<?= $total_comments !== 1 ? 's' : '' ?>
-        <?php if ($total_pages > 1): ?> · Page <?= $page ?> of <?= $total_pages ?><?php endif; ?>
+        <?php if ($total_pages > 1): ?> Â· Page <?= $page ?> of <?= $total_pages ?><?php endif; ?>
       </span>
       <a href="profile.php" class="btn btn-ghost">
         <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 2L4 7l5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -542,7 +543,7 @@ include '../shared/header.php';
     </div>
   </div>
 
-  <!-- ══════════ BODY ══════════ -->
+  <!-- â•â•â•â•â•â•â•â•â•â• BODY â•â•â•â•â•â•â•â•â•â• -->
   <div class="comments-body">
 
     <?php display_flash(); ?>
@@ -559,7 +560,7 @@ include '../shared/header.php';
         <div class="comment-row" style="animation-delay:<?= $i * 35 ?>ms">
 
           <!-- icon -->
-          <div class="comment-icon">💬</div>
+          <div class="comment-icon">ðŸ’¬</div>
 
           <!-- body -->
           <div class="row-body">
@@ -570,7 +571,7 @@ include '../shared/header.php';
             <div class="row-meta">
               <span class="row-meta-item">
                 <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <?= date('M j, Y · g:i A', strtotime($comment['created_at'])) ?>
+                <?= date('M j, Y Â· g:i A', strtotime($comment['created_at'])) ?>
               </span>
             </div>
 
@@ -617,7 +618,7 @@ include '../shared/header.php';
         $end   = min($total_pages, $page + 2);
         if ($start > 1): ?>
           <a href="my-comments.php?page=1" class="page-btn">1</a>
-          <?php if ($start > 2): ?><span class="page-btn" style="pointer-events:none;opacity:.4;border:none;padding:.4rem .5rem">…</span><?php endif; ?>
+          <?php if ($start > 2): ?><span class="page-btn" style="pointer-events:none;opacity:.4;border:none;padding:.4rem .5rem">â€¦</span><?php endif; ?>
         <?php endif; ?>
 
         <?php for ($i = $start; $i <= $end; $i++): ?>
@@ -627,7 +628,7 @@ include '../shared/header.php';
         <?php endfor; ?>
 
         <?php if ($end < $total_pages):
-          if ($end < $total_pages - 1): ?><span class="page-btn" style="pointer-events:none;opacity:.4;border:none;padding:.4rem .5rem">…</span><?php endif; ?>
+          if ($end < $total_pages - 1): ?><span class="page-btn" style="pointer-events:none;opacity:.4;border:none;padding:.4rem .5rem">â€¦</span><?php endif; ?>
           <a href="my-comments.php?page=<?= $total_pages ?>" class="page-btn"><?= $total_pages ?></a>
         <?php endif; ?>
 
@@ -643,7 +644,7 @@ include '../shared/header.php';
 
     <?php else: ?>
       <div class="comments-empty">
-        <span class="comments-empty-icon">💬</span>
+        <span class="comments-empty-icon">ðŸ’¬</span>
         <h3>No comments yet</h3>
         <p>You haven't posted any comments yet. Start engaging with the community!</p>
         <a href="index.php" class="btn btn-primary">
@@ -657,3 +658,4 @@ include '../shared/header.php';
 </div><!-- /.comments-page -->
 
 <?php include '../shared/footer.php'; ?>
+

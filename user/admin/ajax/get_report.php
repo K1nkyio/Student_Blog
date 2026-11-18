@@ -3,13 +3,20 @@
 header('Content-Type: application/json');
 
 // Check admin authentication directly (don't include header.php as it redirects on failure)
-session_start();
+require_once dirname(__DIR__, 2) . '/shared/session.php';
+    start_project_session();
 if (!isset($_SESSION['admin'])) {
     echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
     exit;
 }
 
 include '../../shared/db_connect.php';
+require_once dirname(__DIR__, 2) . '/shared/admin_auth.php';
+if (!require_admin_access($conn, null, false)) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+    exit;
+}
 include '../../shared/functions.php';
 
 $report_id = (int)($_GET['id'] ?? 0);
@@ -48,7 +55,7 @@ ob_start();
                     <?php echo htmlspecialchars($report['subject']); ?>
                 </h3>
                 <div style="color: #64748b; font-size: 0.9rem;">
-                    <strong>Report ID:</strong> #<?php echo htmlspecialchars($report['report_id']); ?> •
+                    <strong>Report ID:</strong> #<?php echo htmlspecialchars($report['report_id']); ?> â€¢
                     <strong>Submitted:</strong> <?php echo date('F d, Y \a\t g:i A', strtotime($report['created_at'])); ?>
                 </div>
             </div>
@@ -141,10 +148,10 @@ ob_start();
                         Status
                     </label>
                     <select name="status" id="status" style="width: 100%; padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.95rem; background: white; transition: border-color 0.3s ease;">
-                        <option value="pending" <?php echo $report['status'] === 'pending' ? 'selected' : ''; ?>>⏳ Pending Review</option>
-                        <option value="reviewing" <?php echo $report['status'] === 'reviewing' ? 'selected' : ''; ?>>🔍 Under Review</option>
-                        <option value="resolved" <?php echo $report['status'] === 'resolved' ? 'selected' : ''; ?>>✅ Resolved</option>
-                        <option value="dismissed" <?php echo $report['status'] === 'dismissed' ? 'selected' : ''; ?>>❌ Dismissed</option>
+                        <option value="pending" <?php echo $report['status'] === 'pending' ? 'selected' : ''; ?>>â³ Pending Review</option>
+                        <option value="reviewing" <?php echo $report['status'] === 'reviewing' ? 'selected' : ''; ?>>ðŸ” Under Review</option>
+                        <option value="resolved" <?php echo $report['status'] === 'resolved' ? 'selected' : ''; ?>>âœ… Resolved</option>
+                        <option value="dismissed" <?php echo $report['status'] === 'dismissed' ? 'selected' : ''; ?>>âŒ Dismissed</option>
                     </select>
                 </div>
 
@@ -239,3 +246,4 @@ echo json_encode(['success' => true, 'html' => $html]);
 
 $conn->close();
 ?>
+

@@ -1,7 +1,9 @@
 <?php
 include '../shared/db_connect.php';
-session_start();
-if (!isset($_SESSION['admin'])) { header('Location: register.php'); exit(); }
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
+require_once dirname(__DIR__) . '/shared/admin_auth.php';
+require_admin_access($conn);
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id) {
@@ -13,4 +15,5 @@ if ($id) {
 header("Location: dashboard.php");
 exit();
 ?>
+
 

@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 define('BLOG_SYSTEM', true);
 
 require_once '../shared/db_connect.php';
@@ -37,10 +38,14 @@ if (ini_get('session.use_cookies')) {
 
 // Destroy the session
 session_destroy();
+session_write_close();
+session_id('');
 
 // Start a fresh session to set a flash message
-session_start();
+require_once dirname(__DIR__) . '/shared/session.php';
+    start_project_session();
 set_flash('success', 'You have been logged out.');
 
 // Redirect to homepage
 redirect('index.php');
+
